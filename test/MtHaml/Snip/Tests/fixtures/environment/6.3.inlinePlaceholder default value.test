@@ -1,0 +1,44 @@
+--FILE--
+<?php
+echo compilePhpSnipHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@title
+    taiwan
+@title taiwan
+@box2
+@box2
+    _ myboxclass
+--SNIPS--
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+<?php
+$title="%h1 welcome to {@:gaoxiong@}.";
+$box2=<<<S
+.{@:box@}
+    .title
+        @@@ defaulttitle
+    .{@:body@}
+        @@@ defaultbody
+S;
+?>
+
+--EXPECT--
+<h1>welcome to taiwan.</h1>
+<h1>welcome to taiwan.</h1>
+<div class="box">
+  <div class="title">
+defaulttitle  </div>
+  <div class="body">
+defaultbody  </div>
+</div>
+<div class="myboxclass">
+  <div class="title">
+defaulttitle  </div>
+  <div class="body">
+defaultbody  </div>
+</div>
+

@@ -1,0 +1,4 @@
+*.prepare.haml
+vendor
+examples/tmp*
+examples/snips/tmp*

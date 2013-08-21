@@ -1,0 +1,28 @@
+--FILE--
+<?php
+echo compilePhpSnipHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'prepare'=>true,
+    'enable_escaper' => false,
+));
+
+--HAML--
+{% $n=array('one','two','three') %}
+@title(number="{= reset($n) =}")
+@title(number="{= next($n) =}")
+@title(number="{= next($n) =}")
+--SNIPS--
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+<?php
+
+$title=function($number){
+    return "%h1 title $number";
+};
+
+
+--EXPECT--
+<h1>title one</h1>
+<h1>title two</h1>
+<h1>title three</h1>
+

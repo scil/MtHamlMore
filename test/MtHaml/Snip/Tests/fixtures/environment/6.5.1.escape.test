@@ -1,0 +1,33 @@
+--FILE--
+<?php
+echo compilePhpSnipHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@inlineSyntax
+@inlineSyntaxV
+@inlineWithPrefix
+@inlineSyntaxWithPrefix
+--SNIPS--
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+<?php
+// one \
+$inlineSyntax='%p syntax of inlinePlaceholder is \{@@}.';
+$inlineSyntaxV='%p syntax of inlinePlaceholder with default value is \{@:default value@}.';
+
+// two \
+$inlineWithPrefix='hello, \\\\{@:ivy@}';
+
+// three \
+$inlineSyntaxWithPrefix='%p inlinePlaceholder syntax with a leading escape is \\\\\\{@:default value@}.';
+?>
+
+--EXPECT--
+<p>syntax of inlinePlaceholder is {@@}.</p>
+<p>syntax of inlinePlaceholder with default value is {@:default value@}.</p>
+hello, \ivy
+<p>inlinePlaceholder syntax with a leading escape is \{@:default value@}.</p>
+

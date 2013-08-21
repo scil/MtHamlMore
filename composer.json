@@ -1,0 +1,22 @@
+{
+    "name": "scil/MtHamlSnip",
+    "type": "library",
+    "description": "Add Snip function to MtHaml, one way to \"Don't Reinvent the Wheel\"",
+    "keywords": ["HAML"],
+    "homepage": "https://github.com/scil/MtHamlSnip",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "scil",
+            "email": "scil.zc@gmail.com"
+        }
+    ],
+    "require": {
+        "mthaml/mthaml": ">=1.1.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "MtHaml\\Snip\\": "lib/"
+        }
+    }
+}

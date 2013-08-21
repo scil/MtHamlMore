@@ -1,0 +1,140 @@
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+@title{"text snip"}
+%p
+  @more
+
+@title{"element snip"}
+@footer
+
+@title{"placeholders"}
+@box
+  _ this is title
+  _
+    %span this is body
+
+@title{"named placeholders"}
+@namedBox
+  _body
+    %span this is body
+  _title this is title
+
+@title{"named-and-unnamed-mixed placeholders"}
+@mixed
+  _title2 second title
+  _title1 first title
+  _ item1
+  _ item2
+  _ item3
+  _
+    .last(style="color:red")
+      last item
+
+
+@title{"placeholder with default value"}
+@default
+
+@title{"closure snip"}
+@closure body
+
+@title{"snip attributes"}
+@person(name="ivy")
+
+@title{"attributes default value"}
+@person
+
+@title{"snip attributes with prepare feature"}
+{% $a='ivy';$n=0; %}
+@person(name="{= $a.++$n =}")
+@person(name="{= $a.++$n =}")
+
+@snipInSnipTitle{"use snip located at haml file"}
+@currentfile
+
+@snipInSnipTitle{"use snip located at same snip file"}
+@nested
+
+@snipInSnipTitle
+@nested2 BODY defined by user
+
+@snipInSnipTitle{"twitter bootstrap v2.3.2 grid "}
+@css{"http://getbootstrap.com/2.3.2/assets/css/bootstrap.css"}
+@mygrid
+  _ left: 2/12
+  _ middle: 4/12
+  _ right: 6/12
+
+@snipInSnipTitle{"$__MtHamlSnip_uses"}
+@common
+
+@snipInSnipTitle{"$__MtHamlSnip_mixes"}
+@abstract my body
+
+@title{"InlineSnipCaller"}
+snip more's content is @{more}
+%div i will call snip more using \@{more}
+%div this is a long article, click here to see @{more}
+
+@title{"InlinePlaceholder"}
+%dl
+  %dt unnamed inlineplaceholder without default value
+  %dd
+    @inline Tom
+%dl
+  %dt Syntax
+  %dd
+    @inlineS
+%dl
+  %dt inlineplaceholder with defautlvalue:
+  %dd
+    @inlineDefaultValue
+%dl
+  %dt inlineplaceholder with defautlvalue:
+  %dd
+    @inlineDefaultValue Jim
+%dl
+  %dt Syntax:
+  %dd
+    @inlineDefaultValueS
+%dl
+  %dt named inlineplaceholder
+  %dd
+    @inlineName
+      _name Jim
+%dl
+  %dt Syntax:
+  %dd
+    @inlineNameS
+%dl
+  %dt named inlineplaceholder with default value
+  %dd
+    @inlineNameDefaultValue
+%dl
+  %dt named inlineplaceholder with default value
+  %dd
+    @inlineNameDefaultValue
+      _name Jim
+%dl
+  %dt Syntax:
+  %dd
+    @inlineNameDefaultValueS
+
+
+:css
+  .title {
+    border-bottom:1px solid grey;
+    width:40%;}
+  .mid {
+    width:90%;
+    margin:0 auto;
+    text-align:center;}
+  body{
+    width:60%;
+    margin:30px auto;}
+
+-#
+  <?php
+  $currentfile=function(){
+    $pos=strrpos(__FILE__,'MtHamlSnip');
+    return str_replace('\\','/',substr(__FILE__,$pos));
+  }
+  ?>

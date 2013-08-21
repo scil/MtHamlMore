@@ -1,0 +1,35 @@
+--FILE--
+<?php
+echo compilePhpSnipHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@more
+@more2
+@more3
+--SNIPS--
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+<?php
+
+$more="%span#more1 more...";
+
+$more2="%span#more2\n  more...";
+
+$more3=<<<S
+%span#more3
+    more...
+S;
+
+?>
+--EXPECT--
+<span id="more1">more...</span>
+<span id="more2">
+  more...
+</span>
+<span id="more3">
+  more...
+</span>
+

@@ -1,0 +1,44 @@
+--FILE--
+<?php
+echo compilePhpSnipHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@threeWithLastClass
+    _
+        .first 1
+    _
+        .second 2
+    _ ok
+--SNIPS--
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+<?php
+
+$three=<<<S
+@@@
+@@@
+@@@last
+S;
+
+$threeWithLastClass=<<<S
+@three
+    _
+        @@@
+    _
+        @@@
+    _last
+        .last
+            @@@
+S;
+
+?>
+
+--EXPECT--
+<div class="first">1</div>
+<div class="second">2</div>
+<div class="last">
+ok</div>
+

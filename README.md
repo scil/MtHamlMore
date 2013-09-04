@@ -169,6 +169,7 @@ Precautions
     ```
     @box{"my title" "my body}
 
+3. parse code: \MtHaml\Snip\Parser::parseSnipCallerAttributes
 
 ### snip file order when searching snip
 if your set uses

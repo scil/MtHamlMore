@@ -7,10 +7,10 @@ use MtHaml\Snip\Exception\SyntaxErrorException;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\SnipCaller;
 
+// placeholdervalue only ocures as SnipCaller's child
 class MakesurePlaceholderValue extends VisitorAbstract
 {
 
-    // placeholdervalue only ocures as SnipCaller's child
     function enterPlaceholderValue(PlaceholderValue $node)
     {
         $parent = $node->getParent();

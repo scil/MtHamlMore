@@ -6,8 +6,6 @@ use MtHaml\NodeVisitor\NodeVisitorAbstract;
 use MtHaml\Snip\Node\SnipCaller;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
-use MtHaml\Snip\Environment;
-use MtHaml\Snip\Snips;
 
 class VisitorAbstract extends NodeVisitorAbstract implements VisitorInterface
 {

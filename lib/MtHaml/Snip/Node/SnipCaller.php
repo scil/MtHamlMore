@@ -58,7 +58,8 @@ class SnipCaller extends NestAbstract
             $visitor->leaveSnipCaller($this);
          }
         else{
-//          $visitor is MakesurePlaceholderValue or  ApplyPlaceholderValue   . when ApplyPlaceholderValue is needed? sed example "snip in snip 2"
+            // $visitor is MakesurePlaceholderValue or  ApplyPlaceholderValue   .
+            // when ApplyPlaceholderValue is needed? sed example "snip in snip 2"
 
             $visitor->enterSnipCaller($this);
             if (false !== $visitor->enterSnipCallerChilds($this)) {

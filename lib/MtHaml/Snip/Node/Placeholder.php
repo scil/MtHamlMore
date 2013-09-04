@@ -10,23 +10,31 @@ use MtHaml\Snip\NodeVisitor\MakesurePlaceholderValue;
 
 class Placeholder extends NestAbstract
 {
-    protected $name = null;
+    protected $name;
 
-    public  $values = null;
-
-
-    public function visitValues(NodeVisitorInterface $visitor)
-    {
-
-        foreach ($this->values as $child) {
-            $child->accept($visitor);
-        }
-    }
+    protected $values;
 
     public function __construct(array $position, $name)
     {
         parent::__construct($position);
         $this->name = $name;
+    }
+
+
+    function setValues(array $v)
+    {
+        $this->values=$v;
+    }
+    function getValues()
+    {
+        return $this->values;
+    }
+    public function visitValues(NodeVisitorInterface $visitor)
+    {
+
+        foreach ($this->getValues() as $child) {
+            $child->accept($visitor);
+        }
     }
 
     public function getName()

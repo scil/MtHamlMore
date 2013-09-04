@@ -8,7 +8,7 @@ use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
 use MtHaml\Snip\Environment;
 
-use MtHaml\Snip\Exception\SyntaxErrorException;
+use MtHaml\Snip\Exception\SnipCallerAttriSyntaxException;
 use MtHaml\Node\Text;
 use MtHaml\Node\InterpolatedString;
 
@@ -115,7 +115,7 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                 // (#{1+1})  this is value of type Insert
                 // {"abc"} this is value of InterpolatedString
             } else
-                throw new SyntaxErrorException(sprintf('attri value should be must be an instance of InterpolatedString or Text or be ignored , instance of %s given', get_class($value)));
+                throw new SnipCallerAttriSyntaxException(sprintf('attri value should be must be an instance of InterpolatedString or Text or be ignored , instance of %s given', get_class($value)));
 
             $value = $attr->getValue();
             if (is_null($value)) {
@@ -129,7 +129,7 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                     continue;
                 }
             } else
-                throw new SyntaxErrorException(sprintf('attri value should be must be an instance of InterpolatedString  , instance of %s given', get_class($value)));
+                throw new SnipCallerAttriSyntaxException(sprintf('attri value should be must be an instance of InterpolatedString  , instance of %s given', get_class($value)));
 
             $named_attributes[$name_content] = $value_content;
 
@@ -146,110 +146,46 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
             if ($child instanceof Text) {
                 $content .= $child->getContent();
             } else {
-                throw new SyntaxErrorException(sprintf('attri InterpolatedString type value should be made of  Text (InlineSnipCaller is subclass of Text), %s given ', get_class($child)));
+                throw new SnipCallerAttriSyntaxException(sprintf('attri InterpolatedString type value should be made of  Text (InlineSnipCaller is subclass of Text), %s given ', get_class($child)));
             }
         }
         return $content;
     }
 
-    // most code from \MtHaml\NodeVisitor\RendererAbstract mothod enterSnipCallerAttributes
-//    protected  function ifSnipCallerDynamicAttributes(SnipCaller $node)
-//    {
-//        $hasDynAttr = false;
-//
-//        foreach ($node->getAttributes() as $attr) {
-//            $nameNode = $attr->getName();
-//            $valueNode = $attr->getValue();
-//
-//            if ($attr instanceof TagAttributeList) {
-//                $hasDynAttr = true;
-//                break;
-//            }
-//            if ($nameNode && (!$nameNode->isConst() || !$valueNode || !$valueNode->isConst())) {
-//                $hasDynAttr = true;
-//                break;
-//            }
-//        }
-//
-//        if ($hasDynAttr) {
-//            return true;
-//        }
-//        return false;
-//
-//        $this->renderDynamicAttributes($node);
-//
-//    }
+
+    public function enterSnipCallerContent(SnipCaller $node) { }
+
+    public function leaveSnipCallerContent(SnipCaller $node) { }
+
+    public function enterSnipCallerChilds(SnipCaller $node) { }
+
+    public function leaveSnipCallerChilds(SnipCaller $node) { }
+
+    public function leaveSnipCaller(SnipCaller $node) { }
 
 
-    public function enterSnipCallerContent(SnipCaller $node)
-    {
-    }
+    public function enterPlaceholderValue(PlaceholderValue $node) { }
 
-    public function leaveSnipCallerContent(SnipCaller $node)
-    {
-    }
+    public function enterPlaceholderValueContent(PlaceholderValue $node) { }
 
-    public function enterSnipCallerChilds(SnipCaller $node)
-    {
-    }
+    public function leavePlaceholderValueContent(PlaceholderValue $node) { }
 
-    public function leaveSnipCallerChilds(SnipCaller $node)
-    {
-    }
+    public function enterPlaceholderValueChilds(PlaceholderValue $node) { }
 
-    public function leaveSnipCaller(SnipCaller $node)
-    {
-    }
+    public function leavePlaceholderValueChilds(PlaceholderValue $node) { }
 
+    public function leavePlaceholderValue(PlaceholderValue $node) { }
 
+    public function enterPlaceholder(Placeholder $node) { }
 
+    public function leavePlaceholder(Placeholder $node) { }
 
-    public function enterPlaceholderValue(PlaceholderValue $node)
-    {
-    }
+    public function enterPlaceholderContent(Placeholder $node) { }
 
-    public function enterPlaceholderValueContent(PlaceholderValue $node)
-    {
-    }
+    public function leavePlaceholderContent(Placeholder $node) { }
 
-    public function leavePlaceholderValueContent(PlaceholderValue $node)
-    {
-    }
+    public function enterPlaceholderChilds(Placeholder $node) { }
 
-    public function enterPlaceholderValueChilds(PlaceholderValue $node)
-    {
-    }
-
-    public function leavePlaceholderValueChilds(PlaceholderValue $node)
-    {
-    }
-
-    public function leavePlaceholderValue(PlaceholderValue $node)
-    {
-    }
-
-    public function enterPlaceholder(Placeholder $node)
-    {
-    }
-
-    public function leavePlaceholder(Placeholder $node)
-    {
-    }
-
-    public function enterPlaceholderContent(Placeholder $node)
-    {
-    }
-
-    public function leavePlaceholderContent(Placeholder $node)
-    {
-    }
-
-    public function enterPlaceholderChilds(Placeholder $node)
-    {
-    }
-
-    public function leavePlaceholderChilds(Placeholder $node)
-    {
-    }
+    public function leavePlaceholderChilds(Placeholder $node) { }
 
 }

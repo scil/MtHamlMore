@@ -36,7 +36,7 @@ class PlaceholderValue extends NestAbstract
 
         if (false !== $visitor->enterPlaceholderValue($this)) {
 
-//            no need to visit content, because ApplyPlaceholderValue has
+//            no need to visit content, because ApplyPlaceholderValue has visited
 //            if (false !== $visitor->enterPlaceholderValueContent($this)) {
 //                $this->visitContent($visitor);
 //            }

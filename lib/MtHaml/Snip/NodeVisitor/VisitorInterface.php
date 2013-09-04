@@ -5,18 +5,10 @@ namespace MtHaml\Snip\NodeVisitor;
 use MtHaml\Snip\Node\SnipCaller;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
-use MtHaml\Snip\Environment;
-use MtHaml\Snip\Snips;
 
 interface VisitorInterface
 {
     public function enterSnipCaller(SnipCaller $node);
-//    public function enterSnipCallerAttributes(SnipCaller $node);
-//    public function leaveSnipCallerAttributes(SnipCaller $node);
-//    public function enterSnipCallerAttributeName(TagAttribute $node);
-//    public function enterSnipCallerAttributeValue(TagAttribute $node);
-//    public function leaveSnipCallerAttributeValue(TagAttribute $node);
-//    public function enterSnipCallerAttributeInterpolation(TagAttributeInterpolation $node);
     public function enterSnipCallerContent(SnipCaller $node);
     public function leaveSnipCallerContent(SnipCaller $node);
     public function enterSnipCallerChilds(SnipCaller $node);

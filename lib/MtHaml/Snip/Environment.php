@@ -50,7 +50,6 @@ class Environment extends \MtHaml\Environment
         }
 
         $string = $this->parseInlineSnipCaller($string);
-
         $string = $this->parseInlinePlaceholder($string);
 
         $compiled = parent::compileString($string, $filename);
@@ -121,7 +120,6 @@ class Environment extends \MtHaml\Environment
                     'level' => $this->getOption('level') + 1,
                 );
                 $parsedSnip = rtrim(self::parseSnip($matches[2], array(), $options, $this), "\n");
-//                $parsedSnip = rtrim($this->parseSnip($matches[2], array(), $options, $this), "\n");
                 return $front . $parsedSnip;
             } else {
                 return str_repeat('\\', ($number - 1) / 2) . '@{' . $matches[2] . '}';

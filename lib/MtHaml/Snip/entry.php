@@ -4,7 +4,7 @@ use MtHaml\Snip\Environment;
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 
-// $options:
+// MtHamlSnip special options:
 //    array(
 //        'uses'=>array(__DIR__.'/snips/php.php'),
 //        'prepare'=>true,

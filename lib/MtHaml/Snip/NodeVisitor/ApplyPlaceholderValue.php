@@ -7,7 +7,7 @@ use MtHaml\Snip\Node\Placeholder;
 
 class ApplyPlaceholderValue extends VisitorAbstract
 {
-    public $values;
+    protected $values;
 
     function  __construct($v)
     {
@@ -33,21 +33,20 @@ class ApplyPlaceholderValue extends VisitorAbstract
         // default values
         }else {
             if ($node->hasChilds())
-                $node->values = $node->getChilds();
+                $this->setValues($node, $node->getChilds() );
             elseif ($node->hasContent())
-                $node->values = array($node->getContent());
+                $this->setValues($node, array($node->getContent()) );
             else
-                //todo: more useful info
                 throw new SyntaxErrorException(sprintf('plz supply values for placeholder [[%s]]', $node->getName()));
         }
 
     }
-    protected function setValues($node,$v){
+    protected function setValues(Placeholder $node,$v){
         // when "_\n  v", $c is an array already, but "_ v" not
         if(!is_array($v)){
             $v=array($v);
         }
-        $node->values=$v;
+        $node->setValues($v);
     }
 
 

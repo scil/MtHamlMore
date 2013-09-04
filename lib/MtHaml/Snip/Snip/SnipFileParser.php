@@ -47,10 +47,10 @@ class SnipFileParser implements SnipFileParserInterface
                 $named_att = $arg[1];
                 $snip = self::call_user_func_named_array($snip, $normal_arr, $named_att);
             } catch (\Exception $e) {
-                throw new SnipFileParserException($file, $name, "run wrong $e");
+                throw new SnipFileParserException($file, $snip, "run wrong $e");
             }
         } else {
-            throw new SnipFileParserException($file, $name, 'not string or callable ');
+            throw new SnipFileParserException($file, $snip, 'not string or callable ');
         }
         return $snip;
     }

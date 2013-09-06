@@ -58,7 +58,8 @@ class Parser extends \MtHaml\Parser
 
             $buf->skipWs();
 
-            if (null !== $nested = $this->parseNestableStatement($buf)) {
+            if (null !== $nested = $this->parseStatement($buf)) {
+//            if (null !== $nested = $this->parseNestableStatement($buf)) {
 
                 $node->setContent($nested);
             }
@@ -81,7 +82,7 @@ class Parser extends \MtHaml\Parser
 
             $buf->skipWs();
 
-            if (null !== $nested = $this->parseNestableStatement($buf)) {
+            if (null !== $nested = $this->parseStatement($buf)) {
 
                 $node->setContent($nested);
             }
@@ -105,7 +106,7 @@ class Parser extends \MtHaml\Parser
 
             $buf->skipWs();
 
-            if (null !== $nested = $this->parseNestableStatement($buf)) {
+            if (null !== $nested = $this->parseStatement($buf)) {
 
                 $node->setContent($nested);
             }

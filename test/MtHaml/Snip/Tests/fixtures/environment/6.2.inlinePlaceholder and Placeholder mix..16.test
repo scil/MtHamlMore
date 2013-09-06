@@ -49,19 +49,24 @@ S;
 --EXPECT--
 <div class="myboxclass">
   <div class="title">
-mytitle  </div>
+    mytitle
+  </div>
   <div class="body">
-mybody  </div>
+    mybody
+  </div>
 </div>
 <div class="myboxclass">
   <div class="title">
-mytitlecontent  </div>
+    mytitlecontent
+  </div>
   <div class="mybody">
-mybodycontent  </div>
+    mybodycontent
+  </div>
 </div>
 <div class="myboxclass">
   <div class="title">
-mytitlecontent  </div>
+    mytitlecontent
+  </div>
   <div class="mybody">mybodycontent</div>
 </div>
 

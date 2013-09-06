@@ -25,7 +25,7 @@ class SnipHouse implements SnipHouseInterface
 
     }
 
-    protected function setMainFile($file)
+    function setMainFile($file)
     {
         try {
             $this->addUse($file, true);
@@ -39,17 +39,17 @@ class SnipHouse implements SnipHouseInterface
         return str_replace('\\', '/', $path);
     }
 
-    protected function getMainFile()
+    function getMainFile()
     {
         return $this->mainFile;
     }
 
-    protected function getUses()
+    function getUses()
     {
         return $this->uses;
     }
 
-    protected function addUses($files)
+    function addUses($files)
     {
         if (empty($files)) return;
 
@@ -66,7 +66,7 @@ class SnipHouse implements SnipHouseInterface
         }
     }
 
-    protected function addUse($file, $bMainFile = false)
+    function addUse($file, $bMainFile = false)
     {
         if (empty($file)) {
             return;

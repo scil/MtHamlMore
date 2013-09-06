@@ -57,11 +57,14 @@ S;
 <div class="row show-grid">
   <div class="span2">
     <div class="title">
-mytitle    </div>
+      mytitle
+    </div>
     <div class="body">
-mybody    </div>
+      mybody
+    </div>
   </div>
   <div class="span10">
-10  </div>
+    10
+  </div>
 </div>
 

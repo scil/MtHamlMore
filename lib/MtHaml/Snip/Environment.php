@@ -119,7 +119,10 @@ class Environment extends \MtHaml\Environment
                 $options = array(
                     'level' => $this->getOption('level') + 1,
                 );
-                $parsedSnip = rtrim(self::parseSnip($matches[2], array(), $options, $this), "\n");
+                // trim any break line or indent space
+                $parsedSnip =  rtrim(
+                        self::parseSnip($matches[2], array(), $options, $this),
+                        "\n") ;
                 return $front . $parsedSnip;
             } else {
                 return str_repeat('\\', ($number - 1) / 2) . '@{' . $matches[2] . '}';
@@ -189,7 +192,7 @@ class Environment extends \MtHaml\Environment
                             } elseif (!empty($matches['default']))
                                 return $front . $matches['default'];
                         } else {
-                            return str_repeat('\\', ($number - 1) / 2) . '{@' . (key_exists(3,$matches)?$matches[3]:'') . '@}';
+                            return str_repeat('\\', ($number - 1) / 2) . '{@' . (array_key_exists(3,$matches)?$matches[3]:'') . '@}';
                         }
                         //  named InlinePlaceholder
                     } else {
@@ -203,7 +206,7 @@ class Environment extends \MtHaml\Environment
                                 return $front . $matches['default2'];
                             }
                         } else {
-                            return str_repeat('\\', ($number - 1) / 2) . '{@' . (key_exists(6,$matches)?$matches[6]:'') . '@}';
+                            return str_repeat('\\', ($number - 1) / 2) . '{@' . (array_key_exists(6,$matches)?$matches[6]:'') . '@}';
                         }
                     }
 
@@ -216,7 +219,7 @@ class Environment extends \MtHaml\Environment
         return $string;
     }
 
-    protected function renderSnipTree($nodes)
+    protected function renderSnipTree($nodes,$trim=true)
     {
 
         if (!is_array($nodes))
@@ -234,8 +237,8 @@ class Environment extends \MtHaml\Environment
             $outputs[] = $target->compile($this, $node);
         }
 
-        $outputs = rtrim(implode('', $outputs), "\n");
-        return $outputs;
+        $outputs = implode('', $outputs);
+        return $trim? ltrim(rtrim($outputs,"\n")) :outputs;
     }
 
     function getLog()

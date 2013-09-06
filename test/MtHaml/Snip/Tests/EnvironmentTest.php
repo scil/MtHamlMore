@@ -71,7 +71,7 @@ class EnvironmentTest extends TestCase
                 $files =
                     array_merge(
                         glob(__DIR__ . '/fixtures/environment/*.test'),
-                        glob(ROOT_DIR . '/vendor/mthaml/mthaml/test/MtHaml/Tests/fixtures/environment/*.test')
+                        glob(ROOT_DIR . '/vendor/mthaml/mthaml/test/MtHaml/Tests/fixtures/environment/1.*.test')
                     );
             }
             else{

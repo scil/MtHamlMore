@@ -7,31 +7,35 @@ echo compilePhpSnipHaml( $parts['HAML'],array(
 ));
 
 --HAML--
-@title my title
+@title hello1
 @title
-@title2
+    hello2
+-#same with hello1
+@title
+    _ hello3
+@title
+    _
+        hello4
 --SNIPS--
 -# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
 <?php
 
 $title=<<<S
 %h1
-  @@@ welcome to MtHamlSnip
+    @@@
 S;
 
-$title2=<<<S
-%h1
-  @@@
-    welcome to MtHamlSnip 2
-S;
-
-?>
 --EXPECT--
 <h1>
-my title</h1>
+  hello1
+</h1>
 <h1>
-welcome to MtHamlSnip</h1>
+  hello2
+</h1>
 <h1>
-  welcome to MtHamlSnip 2
+  hello3
+</h1>
+<h1>
+  hello4
 </h1>
 

@@ -10,30 +10,37 @@
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 3 : placeholders</h2>
 <div class="title">
-this is title</div>
+  this is title
+</div>
 <div class="body">
   <span>this is body</span>
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 4 : named placeholders</h2>
 <div class="title">
-this is title</div>
+  this is title
+</div>
 <div class="body">
   <span>this is body</span>
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 5 : named-and-unnamed-mixed placeholders</h2>
 <div class="title">
-first title</div>
+  first title
+</div>
 <div class="body">
   <p>
-item1  </p>
+    item1
+  </p>
 </div>
 <div class="title">
-second title</div>
+  second title
+</div>
 <div class="body">
   <p>
-item2  </p>
+    item2
+  </p>
   <p>
-item3  </p>
+    item3
+  </p>
   <div>
     <div class="last" style="color:red">
       last item
@@ -45,10 +52,12 @@ item3  </p>
   snip title
 </div>
 <div class="body">
-body</div>
+  body
+</div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 7 : closure snip</h2>
 <div class="body">
-body</div>
+  body
+</div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 8 : snip attributes</h2>
 <div class="person">
   <div class="name">ivy</div>
@@ -77,18 +86,23 @@ MtHamlSnip/examples/php.haml
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 13 : snip in snip 3</h2>
 <div class="title">
-TITLE defined by caller snip</div>
+  TITLE defined by caller snip
+</div>
 <div class="body">
-BODY defined by user</div>
+  BODY defined by user
+</div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 14 : snip in snip 4: twitter bootstrap v2.3.2 grid </h2>
 <link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css" rel="stylesheet" />
 <div class="row-fluid show-grid">
   <div class="span2">
-left: 2/12  </div>
+    left: 2/12
+  </div>
   <div class="span4">
-middle: 4/12  </div>
+    middle: 4/12
+  </div>
   <div class="span6">
-right: 6/12  </div>
+    right: 6/12
+  </div>
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 15 : snip in snip 5: $__MtHamlSnip_uses</h2>
 <div class="title">
@@ -102,7 +116,8 @@ right: 6/12  </div>
   hello
 </div>
 <div class="body">
-my body</div>
+  my body
+</div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 17 : InlineSnipCaller</h2>
 snip more's content is more...
 <div>i will call snip more using @{more}</div>

@@ -7,38 +7,37 @@ echo compilePhpSnipHaml( $parts['HAML'],array(
 ));
 
 --HAML--
-@threeWithLastClass
+@grid
+    _last LAST ONE;
     _
-        .first 1
+        grid 1
     _
-        .second 2
-    _ ok
+        grid 2
 --SNIPS--
 -# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
 <?php
 
-$three=<<<S
-@@@
-@@@
-@@@last
-S;
-
-$threeWithLastClass=<<<S
-@three
-    _
+$grid=<<<S
+.row
+    .grid
         @@@
-    _
+    .grid
         @@@
-    _last
-        .last
-            @@@
+    .grid.last
+        @@@last
 S;
 
 ?>
-
 --EXPECT--
-<div class="first">1</div>
-<div class="second">2</div>
-<div class="last">
-ok</div>
+<div class="row">
+  <div class="grid">
+    grid 1
+  </div>
+  <div class="grid">
+    grid 2
+  </div>
+  <div class="grid last">
+    LAST ONE;
+  </div>
+</div>
 

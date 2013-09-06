@@ -31,14 +31,18 @@ S;
 <h1>welcome to taiwan.</h1>
 <div class="box">
   <div class="title">
-defaulttitle  </div>
+    defaulttitle
+  </div>
   <div class="body">
-defaultbody  </div>
+    defaultbody
+  </div>
 </div>
 <div class="myboxclass">
   <div class="title">
-defaulttitle  </div>
+    defaulttitle
+  </div>
   <div class="body">
-defaultbody  </div>
+    defaultbody
+  </div>
 </div>
 

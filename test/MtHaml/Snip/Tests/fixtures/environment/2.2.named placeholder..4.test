@@ -28,9 +28,11 @@ S;
 <div class="box">
   <div class="title">
     <h1>
-thank you    </h1>
+      thank you
+    </h1>
   </div>
   <div class="body">
-body  </div>
+    body
+  </div>
 </div>
 

@@ -1,0 +1,39 @@
+--FILE--
+<?php
+echo compilePhpSnipHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@title my title
+@title
+@title2
+--SNIPS--
+-# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+<?php
+
+$title=<<<S
+%h1
+  @@@ welcome to MtHamlSnip
+S;
+
+$title2=<<<S
+%h1
+  @@@
+    welcome to MtHamlSnip 2
+S;
+
+?>
+--EXPECT--
+<h1>
+  my title
+</h1>
+<h1>
+  welcome to MtHamlSnip
+</h1>
+<h1>
+  welcome to MtHamlSnip 2
+</h1>
+

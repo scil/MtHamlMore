@@ -215,33 +215,6 @@ welcome Jim</h1>
 no matter there is snip named title in common1.php or common2.php.
 
 
-### indent and newline about Text
-
-sometimes you want to get output like
-```
-<h1>
-  title
-</h1>
-```
-
-but you get actually
-```
-<h1>
-title</h1>
-```
-
-why? it's depends on your writing style:
-```
-%h1 title
-```
-is different with
-```
-%h1
-    title
-```
-
-for more detail, you can see test/MtHaml/Snip/Tests/fixtures/environment/2.1.placeholder.test
-
 
 one extra feature : prepare
 -----
@@ -295,13 +268,17 @@ Development memorandum
 2. Snp called by InlineSnipCaller is invokded before parse stage.  code:
     1. MtHaml\Snip\Environment::parseInlineSnipCaller  (InlineSnipCaller is not parsed to an instance of Node for simplify)
 
-2. SnipCaller/InlineSnipCaller can call snip located same file, because current file is added to snipfiles array. code:
-    MtHaml\Snip\Snip\SnipHouse::getSnipAndFiles
+3. SnipCaller/InlineSnipCaller can call snip located same file, because current file is added to snipfiles array. code:
+    1. MtHaml\Snip\Snip\SnipHouse::getSnipAndFiles
 
-4. the only use of Log is to record the process of calling snip. code:
+4. Output of InlineSnipCaller and InlinePlaceholder are trimed, code :
+    1. MtHaml\Snip\Snip\SnipHouse::parseInlineSnipCaller   rtrim(x,"\n")
+    2. MtHaml\Snip\Snip\SnipHouse::renderSnipTree   rtrim(x,"\n") and ltrim(x), does this ltrim kill any spaces that not is indent space?
+
+5. the only use of Log is to record the process of calling snip. code:
     1. MtHaml\Snip\Environment::__construct  $options['log'] ; $options['debug'](enable log)
     2. MtHaml\Snip\NodeVisitor\PhpRenderer::enterSnipCaller
 
-5. how indent works well? code:
+6. how indent works well? code:
     1. MtHaml\Snip\Environment::__construct  $options['baseIndent']
     2. MtHaml\Snip\NodeVisitor\PhpRenderer::__construct

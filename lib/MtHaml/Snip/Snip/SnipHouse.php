@@ -110,7 +110,7 @@ class SnipHouse implements SnipHouseInterface
             $snip = call_user_func(self::$file_snipcaller[$file], $snip, $arg, $file);
             return array($snip, $file, $uses);
         } else
-            throw new SnipHouseException($file, $name, 'no exist ');
+            throw new SnipHouseException(implode(';',$allUses), $name, 'not found in there use files ');
 
 
     }

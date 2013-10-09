@@ -37,7 +37,9 @@ class Environment extends \MtHaml\Environment
                 'level' => 0,
                 'log' => null,
                 'debug' => false,
-                'parentenv'=>null);
+                'snipcallerNode'=>null,
+                'parentenv'=>null,
+            );
 
         parent::__construct($target, $options);
     }

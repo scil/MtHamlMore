@@ -6,6 +6,7 @@ use MtHaml\Exception;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
 use MtHaml\Snip\Node\SnipCaller;
+use MtHaml\Snip\Node\VirtualRoot;
 
 /**
  * MtHaml Parser
@@ -20,8 +21,13 @@ class Parser extends \MtHaml\Parser
 
     public function __construct(\MtHaml\Environment $env=null)
     {
+        $snipcaller=$env->getOption('snipcallerNode');
+        if(empty($snipcaller))
+            parent::__construct();
+        else
+            $this->parent = new VirtualRoot($snipcaller);
+
         $this->env=$env;
-        parent::__construct();
     }
 
     protected function parseStatement($buf)

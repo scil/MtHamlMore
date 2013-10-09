@@ -36,6 +36,7 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                 'placeholdervalues' => $placeholdervalues,
                 'baseIndent' =>  $this->indent,
                 'level' => $env->getOption('level')+1,
+                'snipcallerNode'=>$node,
             );
 
         $compiled = Environment::parseSnip($snipName, $attributes, $options ,$env);

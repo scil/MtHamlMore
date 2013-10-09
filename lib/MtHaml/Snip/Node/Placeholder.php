@@ -12,7 +12,7 @@ class Placeholder extends NestAbstract
 {
     protected $name;
 
-    protected $values;
+    protected $virtual;
 
     public function __construct(array $position, $name)
     {
@@ -21,20 +21,22 @@ class Placeholder extends NestAbstract
     }
 
 
-    function setValues(array $v)
+    function setVirtual(VirtualPlaceholder $v)
     {
-        $this->values=$v;
+        $this->virtual=$v;
     }
-    function getValues()
+    function hasVirtual()
     {
-        return $this->values;
+        return !!($this->virtual);
     }
-    public function visitValues(NodeVisitorInterface $visitor)
+    function getVirtual()
     {
-
-        foreach ($this->getValues() as $child) {
-            $child->accept($visitor);
-        }
+        return $this->virtual;
+    }
+    public function visitVirtual(NodeVisitorInterface $visitor)
+    {
+        if ($this->virtual)
+            $this->virtual->accept($visitor);
     }
 
     public function getName()
@@ -53,7 +55,7 @@ class Placeholder extends NestAbstract
         if ($visitor instanceof MakesurePlaceholderValue || $visitor instanceof ApplyPlaceholderValue ) {
             $visitor->enterPlaceholder($this);
         } else {
-            $this->visitValues($visitor);
+            $this->visitVirtual($visitor);
         }
 
     }

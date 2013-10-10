@@ -3,7 +3,8 @@
 namespace MtHaml\Node;
 
 use MtHaml\NodeVisitor\NodeVisitorInterface;
-use MtHaml\Snip\Node\VirtualParentInterface;
+use MtHaml\Snip\Node\FirstInterface;
+use MtHaml\Snip\Node\SecondInterface;
 
 abstract class NodeAbstract
 {
@@ -48,8 +49,8 @@ abstract class NodeAbstract
 //        return $this->parent;
         $node=$this->parent;
         try{
-             while ($node instanceof VirtualParentInterface){
-                $node=$node->getRealNode()->parent;
+             while ($node instanceof SecondInterface){
+                $node=$node->getFirst()->parent;
              }
         }catch(\Exception $e) {}
         return $node;
@@ -71,10 +72,15 @@ abstract class NodeAbstract
         $node=$this;
         $next=$this->nextSibling;
         try{
-            while (is_null($next) && ($node->parent instanceof VirtualParentInterface)){
-                $node=$this->parent->getRealNode();
-//                printf("next: \$node is %o\n",$node);
+            while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface)){
+                $node=$parent->getFirst();
                 $next=$node->nextSibling;
+                while($next instanceof FirstInterface){
+                    if ($next->hasSecond()){
+                        $childs = $next->getSecond()->getChilds();
+                        $next=$childs[0];
+                    }
+                }
             }
         }catch(\Exception $e) {}
         return $next;
@@ -92,10 +98,15 @@ abstract class NodeAbstract
         $node=$this;
         $pre=$this->previousSibling;
         try{
-            while (is_null($pre) && ($node->parent instanceof VirtualParentInterface)){
-                $node=$this->parent->getRealNode();
-//                printf('$node %s',$node->name);
+            while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface)){
+                $node=$parent->getFirst();
                 $pre=$node->previousSibling;
+                while($pre instanceof FirstInterface){
+                    if ($pre->hasSecond()){
+                        $childs = $pre->getSecond()->getChilds();
+                        $pre=end($childs);
+                    }
+                }
             }
         }catch(\Exception $e) {}
         return $pre;

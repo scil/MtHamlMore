@@ -7,7 +7,7 @@ so i give up.
 
 thinking
 ===
-1. make transparent node like VirtualRoot or VirtualPlaceholder
+1. make transparent node like SecondRoot or SecondPlaceholder
 2. how to achive transparency? hack node relation (getParent/getNextSibling/getPreviousSibling) . see : hackNodeAbstract.php
 
 process

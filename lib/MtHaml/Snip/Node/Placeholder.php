@@ -8,11 +8,11 @@ use MtHaml\Node\NestAbstract;
 use MtHaml\Snip\NodeVisitor\ApplyPlaceholderValue;
 use MtHaml\Snip\NodeVisitor\MakesurePlaceholderValue;
 
-class Placeholder extends NestAbstract
+class Placeholder extends NestAbstract implements FirstInterface
 {
     protected $name;
 
-    protected $virtual;
+    protected $second;
 
     public function __construct(array $position, $name)
     {
@@ -21,22 +21,22 @@ class Placeholder extends NestAbstract
     }
 
 
-    function setVirtual(VirtualPlaceholder $v)
+    function setSecond(SecondInterface $v)
     {
-        $this->virtual=$v;
+        $this->second=$v;
     }
-    function hasVirtual()
+    function hasSecond()
     {
-        return !!($this->virtual);
+        return !!($this->second);
     }
-    function getVirtual()
+    function getSecond()
     {
-        return $this->virtual;
+        return $this->second;
     }
-    public function visitVirtual(NodeVisitorInterface $visitor)
+    public function visitSecond(NodeVisitorInterface $visitor)
     {
-        if ($this->virtual)
-            $this->virtual->accept($visitor);
+        if ($this->second)
+            $this->second->accept($visitor);
     }
 
     public function getName()
@@ -55,7 +55,7 @@ class Placeholder extends NestAbstract
         if ($visitor instanceof MakesurePlaceholderValue || $visitor instanceof ApplyPlaceholderValue ) {
             $visitor->enterPlaceholder($this);
         } else {
-            $this->visitVirtual($visitor);
+            $this->visitSecond($visitor);
         }
 
     }

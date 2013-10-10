@@ -4,17 +4,17 @@ namespace MtHaml\Snip\Node;
 
 use MtHaml\NodeVisitor\NodeVisitorInterface;
 
-class VirtualPlaceholder extends Placeholder implements VirtualParentInterface
+class SecondPlaceholder extends Placeholder implements SecondInterface
 {
-    private $realNode;
-    public function __construct($realNode)
+    private $first;
+    public function __construct($first)
     {
         parent::__construct(array(),null);
-        $this->realNode=$realNode;
+        $this->first=$first;
     }
-    public function getRealNode()
+    public function getFirst()
     {
-        return $this->realNode;
+        return $this->first;
     }
     public function getNodeName()
     {

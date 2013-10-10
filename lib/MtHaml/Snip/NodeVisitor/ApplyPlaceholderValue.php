@@ -4,7 +4,7 @@ namespace MtHaml\Snip\NodeVisitor;
 
 use MtHaml\Snip\Exception\SyntaxErrorException;
 use MtHaml\Snip\Node\Placeholder;
-use MtHaml\Snip\Node\VirtualPlaceholder;
+use MtHaml\Snip\Node\SecondPlaceholder;
 
 class ApplyPlaceholderValue extends VisitorAbstract
 {
@@ -47,11 +47,11 @@ class ApplyPlaceholderValue extends VisitorAbstract
         if(!is_array($v)){
             $v=array($v);
         }
-        $virtual = new VirtualPlaceholder($node);
+        $virtual = new SecondPlaceholder($node);
         foreach($v as $child){
             $virtual->addChild($child);
         }
-        $node->setVirtual($virtual);
+        $node->setSecond($virtual);
     }
 
 

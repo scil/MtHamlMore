@@ -60,7 +60,7 @@ class SnipCaller extends NestAbstract implements FirstInterface
             $this->visitSecond($visitor);
          }
         else{
-            // $visitor is MakesurePlaceholderValue or  ApplyPlaceholderValue   .
+            // $visitor is MakesurePlaceholderValue or  ApplyPlaceholderValue  or ApplySnip .
             // when ApplyPlaceholderValue is needed? sed example "snip in snip 2"
 
             $visitor->enterSnipCaller($this);

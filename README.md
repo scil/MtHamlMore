@@ -260,9 +260,9 @@ Development Rule
 Development memorandum
 --------
 
-1. Snip called by SnipCaller is invoked at render stage,not parse stage, so Illegal nesting can not be checked.  code : MtHaml\Snip\NodeVisitor\PhpRenderer::enterSnipCaller
+1. Snip called by SnipCaller is invoked by visitor ApplySnip before render stage.  code : MtHaml\Snip\NodeVisitor\ApplySnip::enterSnipCaller
 
-2. Snp called by InlineSnipCaller is invokded before parse stage.  code:
+2. Snip called by InlineSnipCaller is invokded before parse stage.  code:
     1. MtHaml\Snip\Environment::parseInlineSnipCaller  (InlineSnipCaller is not parsed to an instance of Node for simplify)
 
 3. SnipCaller/InlineSnipCaller can call snip located same file, because current file is added to snipfiles array. code:
@@ -278,4 +278,10 @@ Development memorandum
 
 6. how indent works well? code:
     1. MtHaml\Snip\Environment::__construct  $options['baseIndent']
-    2. MtHaml\Snip\NodeVisitor\PhpRenderer::__construct
+    2. MtHaml\Snip\NodeVisitor\ApplySnip::__construct
+
+7. SnipCaller and Snip content, PlaceHolder and Placehoder value, they are similar, so they are abstracted by FirstInterface and SecondInterface.
+
+8. How whitespace removel (< >) work ?
+	1. hack node relation (getParent/getNextSibling/getPreviousSibling) . maybe it's not jet mature. see : hackNodeAbstract.php
+	2. how to hack MtHaml file? use composer.json

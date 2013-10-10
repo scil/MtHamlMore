@@ -7,11 +7,12 @@ use MtHaml\NodeVisitor\NodeVisitorInterface;
 use MtHaml\Node\NestAbstract;
 use MtHaml\Snip\NodeVisitor\VisitorInterface;
 
-class SnipCaller extends NestAbstract
+class SnipCaller extends NestAbstract implements FirstInterface
 {
     protected $snipName;
     protected $env;
     protected $attributes;
+    protected $second;
 
     public function __construct(array $position, $snipName, $env, array $attributes)
     {
@@ -54,8 +55,9 @@ class SnipCaller extends NestAbstract
         return;
 
         if ($visitor instanceof \MtHaml\Snip\NodeVisitor\PhpRenderer) {
-            $visitor->enterSnipCaller($this);
-            $visitor->leaveSnipCaller($this);
+//            $visitor->enterSnipCaller($this);
+//            $visitor->leaveSnipCaller($this);
+            $this->visitSecond($visitor);
          }
         else{
             // $visitor is MakesurePlaceholderValue or  ApplyPlaceholderValue   .
@@ -69,8 +71,23 @@ class SnipCaller extends NestAbstract
             $visitor->leaveSnipCaller($this);
         }
 
-
-
+    }
+    function setSecond(SecondInterface $v)
+    {
+        $this->second=$v;
+    }
+    function hasSecond()
+    {
+        return !!($this->second);
+    }
+    function getSecond()
+    {
+        return $this->second;
+    }
+    public function visitSecond(NodeVisitorInterface $visitor)
+    {
+        if ($this->second)
+            $this->second->accept($visitor);
     }
 }
 

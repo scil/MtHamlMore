@@ -4,6 +4,7 @@ namespace MtHaml\Snip;
 
 use MtHaml\Exception;
 use MtHaml\Snip\Exception\SnipException;
+use MtHaml\Snip\NodeVisitor\ApplySnip;
 use MtHaml\Snip\Target\PhpSnip;
 use MtHaml\Target\Php;
 use MtHaml\Target\Twig;
@@ -44,7 +45,7 @@ class Environment extends \MtHaml\Environment
         parent::__construct($target, $options);
     }
 
-    public function compileString($string, $filename)
+    public function compileString($string, $filename,$returnRoot=false)
     {
         $prepareWork = false;
         if ($this->getOption('prepare')) {
@@ -54,7 +55,18 @@ class Environment extends \MtHaml\Environment
         $string = $this->parseInlineSnipCaller($string);
         $string = $this->parseInlinePlaceholder($string);
 
-        $compiled = parent::compileString($string, $filename);
+        if ($returnRoot){
+            // copied from parent::compileString
+            // run until PhpRenderer
+            $target = $this->getTarget();
+            $node = $target->parse($this, $string, $filename);
+            foreach($this->getVisitors() as $visitor) {
+                $node->accept($visitor);
+            }
+            $compiled = $node;
+        }else{
+            $compiled = parent::compileString($string, $filename);
+        }
 
         if ($prepareWork && !$this->getOption('debug')) {
             unlink($filename);
@@ -342,6 +354,7 @@ class Environment extends \MtHaml\Environment
         // if is useless and harmful, because ApplyPlaceholderValueVisitor also apply placehodler default value
         //  if($this->hasPlaceholdervalues())
         $visitors[] = $this->getApplyPlaceholderValueVisitor($this->getPlaceholdervalues());
+        $visitors[] = $this->getApplySnipVisitor($this->getOption('baseIndent'));
 
         $visitors[] = $this->getAutoclosevisitor();
         $visitors[] = $this->getAutoclosevisitor();
@@ -355,6 +368,10 @@ class Environment extends \MtHaml\Environment
         return $visitors;
     }
 
+    public function getApplySnipVisitor($indent)
+    {
+        return new ApplySnip($indent);
+    }
     public function getApplyPlaceholderValueVisitor($values)
     {
         return new ApplyPlaceholderValue($values);
@@ -374,7 +391,7 @@ class Environment extends \MtHaml\Environment
             )
 * @param $parentEnv : the key reason of this argument is at README.md::Development Rule 2.3.3
 */
-    public static function parseSnip($snipName, array $attributes = array(), $options = array(), Environment $parentEnv)
+    public static function parseSnip($snipName, array $attributes = array(), $options = array(), Environment $parentEnv,$returnRoot=false)
     {
 
 
@@ -406,8 +423,7 @@ class Environment extends \MtHaml\Environment
             + $parentEnv->getOptions()
         );
 
-
-        return $haml->compileString($snipHaml, $fileName);
+        return $haml->compileString($snipHaml, $fileName, $returnRoot);
 
 
     }

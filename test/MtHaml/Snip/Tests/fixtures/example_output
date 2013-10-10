@@ -5,7 +5,7 @@
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 2 : element snip</h2>
 <div id="footer" class="mid">
   <p>footer</p>
-  <hr />
+  <hr>
   <p>Powered by MtHaml and MtHamlSnip</p>
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 3 : placeholders</h2>
@@ -92,7 +92,7 @@ MtHamlSnip/examples/php.haml
   BODY defined by user
 </div>
 <h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 14 : snip in snip 4: twitter bootstrap v2.3.2 grid </h2>
-<link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css" rel="stylesheet" />
+<link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css" rel="stylesheet">
 <div class="row-fluid show-grid">
   <div class="span2">
     left: 2/12

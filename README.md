@@ -77,9 +77,6 @@ Getting Started
 -----
 
 step 1: install MtHaml using composer.
-the lastest version 1.2.2 of MtHaml has a little bug which affect MtHamlSnip, you should fix it manully or clone lastest MtHaml from github.
-
-bug address: https://github.com/arnaud-lb/MtHaml/commit/eed2e29fd0214348d5ccac6cf55aab67d8a7bba6
 
 step 2:  snip file mysnips.php ,defining one snip named box
 ```

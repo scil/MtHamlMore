@@ -12,13 +12,11 @@ haml
 ```
 @title{"one box"}
 @box
-    _
-        this is title
-    _
-        thie is content
+    _ this is title
+    _ thie is content
 @title{"two columns"}
 @two_columns
-    _left hello,everyone
+    _left %p hello,everyone
     _right
         @box
             _ title
@@ -37,15 +35,17 @@ output
 <h2>example 2 : two columns</h2>
 <div class="clear">
   <div class="left">
-hello,everyone  </div>
+    <p>hello,everyone</p>
+  </div>
   <div class="right">
     <div class="title">
-title    </div>
+      title
+    </div>
     <div class="body">
-content    </div>
+      content
+    </div>
   </div>
-</div>
-```
+</div>``
 
 snips defined
 ```
@@ -257,6 +257,8 @@ Development Rule
             see: test/MtHaml/Snip/Tests/fixtures/environment/4.3.use snip from other snip file 2.test
         4. no formal way to access Environment in Visitor except Renderer, you can use $GLOBAL to access an Environment object when debugging.
 
+3. there's one except, MtHaml is hacked using composer.json only for whitespace removel (flag < and >).
+
 Development memorandum
 --------
 
@@ -280,8 +282,10 @@ Development memorandum
     1. MtHaml\Snip\Environment::__construct  $options['baseIndent']
     2. MtHaml\Snip\NodeVisitor\ApplySnip::__construct
 
-7. SnipCaller and Snip content, PlaceHolder and Placehoder value, they are similar, so they are abstracted by FirstInterface and SecondInterface.
+7. "@snipName %h1 hello", "_ %h1 hello", "@@@ %h1 hello", there are legal.see code: MtHaml\Snip\Parser::parseSnipCaller, parsePlaceholder, parsePlaceholderValue, they all use " $this->parseStatement($buf)) "
 
 8. How whitespace removel (< >) work ?
 	1. hack node relation (getParent/getNextSibling/getPreviousSibling/getFirstChild/getLastChild) . maybe it's not jet mature. see : hackNodeAbstract.php, hackNestAbstract.php
 	2. how to hack MtHaml file? use composer.json classmap
+
+9. SnipCaller and Snip content, PlaceHolder and Placehoder value, they are abstracted by FirstInterface and SecondInterface for whitespace removel hack.

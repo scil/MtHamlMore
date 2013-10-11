@@ -7,38 +7,30 @@ echo compilePhpSnipHaml( $parts['HAML'],array(
 ));
 
 --HAML--
-@box
-    _ hello world!
-    _
-        %p my first
-        %p thank you
-@namedBox
-    _title hello world!
+@hellobox
     _body1 %p my first
     _body2 %p thank you
 --SNIPS--
 -# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
 <?php
-$box=<<<S
-.title<
-    @@@
-.body<
-    @@@
+$hellobox=<<<S
+.box<
+    @namedBox
+        _title hello
+        _body
+            @@@body1
+            @@@body2
 S;
 $namedBox=<<<S
 .title<
     @@@title
 .body<
-    @@@body1
-    @@@body2
+    @@@body
 S;
 ?>
 
 --EXPECT--
-<div class="title">hello world!</div>
+<div class="box"><div class="title">hello</div>
 <div class="body"><p>my first</p>
-<p>thank you</p></div>
-<div class="title">hello world!</div>
-<div class="body"><p>my first</p>
-<p>thank you</p></div>
+<p>thank you</p></div></div>
 

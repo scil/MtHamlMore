@@ -9,6 +9,10 @@ echo compilePhpSnipHaml( $parts['HAML'],array(
 --HAML--
 %h1<
     @name
+%h1<
+    @name
+    @name
+    @name
 %p<
     @title
 %p2<
@@ -17,7 +21,7 @@ echo compilePhpSnipHaml( $parts['HAML'],array(
 --SNIPS--
 -# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
 <?php
-$name='\ ivy ';
+$name='\ ivy';
 $title=<<<S
 .title
     welcome
@@ -27,7 +31,10 @@ S;
 ?>
 
 --EXPECT--
-<h1> ivy </h1>
+<h1> ivy</h1>
+<h1> ivy
+ ivy
+ ivy</h1>
 <p><div class="title">
   welcome
 </div>

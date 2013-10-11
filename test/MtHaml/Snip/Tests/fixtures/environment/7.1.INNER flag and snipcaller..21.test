@@ -11,10 +11,20 @@ echo compilePhpSnipHaml( $parts['HAML'],array(
     @name
 %h1<
     @name
+    hello
+%h1<
+    hello
+    @name
+%h1<
+    @name
     @name
     @name
 %p<
     @title
+%p<
+    @title
+    %h1
+        ok
 %p2<
     @title
     @title
@@ -33,6 +43,10 @@ S;
 --EXPECT--
 <h1> ivy</h1>
 <h1> ivy
+hello</h1>
+<h1>hello
+ ivy</h1>
+<h1> ivy
  ivy
  ivy</h1>
 <p><div class="title">
@@ -41,6 +55,15 @@ S;
 <div class="title2">
   title
 </div></p>
+<p><div class="title">
+  welcome
+</div>
+<div class="title2">
+  title
+</div>
+<h1>
+  ok
+</h1></p>
 <p2><div class="title">
   welcome
 </div>

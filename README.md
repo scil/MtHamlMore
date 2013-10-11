@@ -283,5 +283,5 @@ Development memorandum
 7. SnipCaller and Snip content, PlaceHolder and Placehoder value, they are similar, so they are abstracted by FirstInterface and SecondInterface.
 
 8. How whitespace removel (< >) work ?
-	1. hack node relation (getParent/getNextSibling/getPreviousSibling) . maybe it's not jet mature. see : hackNodeAbstract.php
-	2. how to hack MtHaml file? use composer.json
+	1. hack node relation (getParent/getNextSibling/getPreviousSibling/getFirstChild/getLastChild) . maybe it's not jet mature. see : hackNodeAbstract.php, hackNestAbstract.php
+	2. how to hack MtHaml file? use composer.json classmap

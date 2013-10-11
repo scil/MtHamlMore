@@ -66,23 +66,38 @@ abstract class NodeAbstract
     }
 
     //hack
+    /*
+     * CASE 1: OUTER flag
+     * .box has to know his next sibling
+     * haml:
+     *      .box
+ *          @content
+     * snip:
+     *      $content=<<<S
+            %p> my name is ivy
+            S;
+     */
     public function getNextSibling()
     {
 //        return $this->nextSibling;
         $node=$this;
-        $next=$this->nextSibling;
-        try{
-            while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface)){
-                $node=$parent->getFirst();
-                $next=$node->nextSibling;
-                while($next instanceof FirstInterface){
-                    if ($next->hasSecond()){
-                        $childs = $next->getSecond()->getChilds();
-                        $next=$childs[0];
-                    }
-                }
+        $next=$this->_next($this);
+        // if the last child, should check if in a SecondInterface parent
+        while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface)){
+            $node=$parent->getFirst();
+            $next=$this->_next($node);
+        }
+        return $next;
+    }
+    protected function _next($node)
+    {
+        $next=$node->nextSibling;
+        while($next instanceof FirstInterface){
+            if ($next->hasSecond()){
+                $childs = $next->getSecond()->getChilds();
+                $next=$childs[0];
             }
-        }catch(\Exception $e) {}
+        }
         return $next;
     }
 
@@ -96,20 +111,25 @@ abstract class NodeAbstract
     {
 //        return $this->previousSibling;
         $node=$this;
-        $pre=$this->previousSibling;
-        try{
-            while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface)){
-                $node=$parent->getFirst();
-                $pre=$node->previousSibling;
-                while($pre instanceof FirstInterface){
-                    if ($pre->hasSecond()){
-                        $childs = $pre->getSecond()->getChilds();
-                        $pre=end($childs);
-                    }
-                }
-            }
-        }catch(\Exception $e) {}
+        $pre=$this->_pre($this);
+        // if the first child, should check if in a SecondInterface parent
+        while (is_null($pre) && (($parent=$node->parent) instanceof SecondInterface)){
+            $node=$parent->getFirst();
+            $pre=$this->_pre($node);
+        }
         return $pre;
+    }
+    protected function _pre($node)
+    {
+        $pre=$node->previousSibling;
+        while($pre instanceof FirstInterface){
+            if ($pre->hasSecond()){
+                $childs = $pre->getSecond()->getChilds();
+                $pre=end($childs);
+            }
+        }
+        return $pre;
+
     }
 
     public function isConst()

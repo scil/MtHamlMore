@@ -15,7 +15,7 @@
         "mthaml/mthaml": ">=1.3.0"
     },
     "autoload": {
-		"classmap": ["lib/MtHaml/Snip/Node/hackNodeAbstract.php"],
+		"classmap": ["lib/MtHaml/Snip/Node/hackNodeAbstract.php","lib/MtHaml/Snip/Node/hackNestAbstract.php"],
         "psr-0": {
             "MtHaml\\Snip\\": "lib/"
         }

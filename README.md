@@ -45,7 +45,8 @@ output
       content
     </div>
   </div>
-</div>``
+</div>
+```
 
 snips defined
 ```
@@ -165,8 +166,8 @@ Precautions
     you should use ruby style
     ```
     @box{"my title" "my body}
-
-3. parse code: \MtHaml\Snip\Parser::parseSnipCallerAttributes
+    ```
+    source code: \MtHaml\Snip\Parser::parseSnipCallerAttributes
 
 ### snip file order when searching snip
 if your set uses

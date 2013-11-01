@@ -3,6 +3,7 @@
 namespace MtHaml\Snip;
 
 use MtHaml\Exception;
+use MtHaml\Snip\Node\HtmlTag;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
 use MtHaml\Snip\Node\SnipCaller;
@@ -44,6 +45,9 @@ class Parser extends \MtHaml\Parser
 
             return $node;
 
+        } else if (null !== $node = $this->parseHtmlTag($buf)) {
+
+            return $node;
         } else
             return parent::parseStatement($buf);
     }
@@ -97,6 +101,23 @@ class Parser extends \MtHaml\Parser
         }
     }
 
+    protected function parseHtmlTag($buf)
+    {
+        $regex='@
+        ^<!--\[if[\w\s]+\]>$| # ie condition comment like <!--[if lt IE9]>
+        ^<\w+[^>/]+>$ # start tag which maybe has childs; there are exceptions like <hr> <meta ..>
+                   # not included:
+                   # end tag like </div>
+                   # comment ,except ie condition comment
+                   # self-closed tag like <hr/>
+                   # single line tag like <h1>title</h1>
+                        # they have no childs, ther are parsed as Statement like official MtHaml
+        @xA';
+        if ($buf->match($regex,$match)) {
+            $node= new HtmlTag($match['pos'][0],$match[0]);
+            return $node;
+        }
+    }
     protected function parseSnipCaller($buf)
     {
         $regex = '/

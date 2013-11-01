@@ -213,6 +213,23 @@ welcome Jim</h1>
 no matter there is snip named title in common1.php or common2.php.
 
 
+one extra feature : HtmlTag
+-----
+html tags can be used normally,not only
+```
+%div
+  <p> hello </p>
+```
+which is supported by MtHaml, but also
+```
+<div>
+    %p hello
+</div>
+```
+This feature enables you to copy any html code into a haml file, only make sure code apply haml indent syntax.
+
+code: '<div>' is parse as HtmlTag, see MtHaml\Snip\Parser::parseHtmlTag
+
 
 one extra feature : prepare
 -----

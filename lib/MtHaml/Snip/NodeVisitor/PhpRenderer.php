@@ -3,6 +3,7 @@
 namespace MtHaml\Snip\NodeVisitor;
 
 use MtHaml\Exception;
+use MtHaml\Snip\Node\HtmlTag;
 use MtHaml\Snip\Node\SnipCaller;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
@@ -16,6 +17,12 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
     public function __construct(Environment $env)
     {
         parent::__construct($env);
+    }
+
+    public function enterHtmlTag(HtmlTag $node)
+    {
+        $indent = $this->shouldIndentBeforeOpen($node);
+        $this->write(sprintf('%s', $node->getContent()), $indent, true);
     }
 
     public function enterSnipCaller(SnipCaller $node){}

@@ -4,6 +4,7 @@ namespace MtHaml\Snip;
 
 use MtHaml\Exception;
 use MtHaml\Snip\Node\HtmlTag;
+use MtHaml\Snip\Node\PlaceholderDefaultCaller;
 use MtHaml\Snip\Node\PlaceholderValue;
 use MtHaml\Snip\Node\Placeholder;
 use MtHaml\Snip\Node\SnipCaller;
@@ -48,10 +49,21 @@ class Parser extends \MtHaml\Parser
         } else if (null !== $node = $this->parseHtmlTag($buf)) {
 
             return $node;
+        } else if (null !== $node = $this->parsePlaceholderDefaultValueCaller($buf)) {
+
+            return $node;
         } else
             return parent::parseStatement($buf);
     }
 
+    protected function parsePlaceholderDefaultValueCaller($buf)
+    {
+        $regex='/^@@default$/';
+        if($buf->match($regex,$match)) {
+            $node = new PlaceholderDefaultCaller($match['pos'][0]);
+            return $node;
+        }
+    }
 
     protected function parsePlaceholderValue($buf)
     {

@@ -13,7 +13,12 @@ haml
 @title{"one box"}
 @box
     _ this is title
-    _ thie is content
+    _ this is content
+@title{"box with default value"}
+@box_withDefault
+    _body
+        custom
+        @@default
 @title{"two columns"}
 @two_columns
     _left %p hello,everyone
@@ -30,9 +35,19 @@ output
   this is title
 </div>
 <div class="body">
-  thie is content
+  this is content
 </div>
-<h2>example 2 : two columns</h2>
+<h2>example 2 : box with default value</h2>
+<div class="box">
+  <div class="title">
+    default title
+  </div>
+  <div class="body">
+    custom
+    <p>default content</p>
+  </div>
+</div>
+<h2>example 3 : two columns</h2>
 <div class="clear">
   <div class="left">
     <p>hello,everyone</p>
@@ -63,6 +78,15 @@ $box=<<<S
     @@@
 S;
 
+$box_withDefault=<<<S
+.box
+    .title
+        @@@title default title
+    .body
+        @@@body
+            %p default content
+S;
+
 $two_columns=<<<S
 .clear
     .left
@@ -91,7 +115,7 @@ S;
 ?>
 ```
 
-step 2:  haml file callSnip.haml
+step 3:  haml file callSnip.haml
 ```
 @box
     _title an example
@@ -99,7 +123,7 @@ step 2:  haml file callSnip.haml
         %p content
 ```
 
-step 3: php code
+step 4: php code
 ```
 // ROOT_DIR is the root dir of MtHamlSnip
 require_once ROOT_DIR . '/lib/MtHaml/Snip/entry.php';
@@ -119,7 +143,8 @@ Glossary
 ----
 * snip : a haml snippet which could be inserted into a haml string or another snip
 
-* PlaceHolder : one type of Node, part of snip, which allow user to insert custom content.default values can be defined for a Placeholder.
+* PlaceHolder : one type of Node, part of snip, which allow user to insert custom content.
+default values can be defined for a Placeholder, and you can call default values using '@@default',which is parsed as PlaceholderDefaultCaller.
 
 * InlinePlaceholder :it's different with Placeholder, just like block element vs inline element in web DOM.
     * Warning: InlineSnipCaller is not a type of Node, it's parsed before parsing haml tree, see:
@@ -208,7 +233,8 @@ if you call snip "welcomtitle"
 Output always is
 ```
 <h1>
-welcome Jim</h1>
+  welcome Jim
+</h1>
 ```
 no matter there is snip named title in common1.php or common2.php.
 
@@ -307,3 +333,6 @@ Development memorandum
 	2. how to hack MtHaml file? use composer.json classmap
 
 9. SnipCaller and Snip content, PlaceHolder and Placehoder value, they are abstracted by FirstInterface and SecondInterface for whitespace removel hack.
+
+10. hacks may result in confusion or infinite loop.
+for example, if PlaceholderDefaultCaller implemented FirstInterface,it's easy to make mistakes because there's anoter FirstInterface Placeholder exist , it's difficult to let '$node->addChild' works well.

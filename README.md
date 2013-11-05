@@ -14,11 +14,13 @@ haml
 @box
     _ this is title
     _ this is content
+
 @title{"box with default value"}
 @box_withDefault
     _body
         custom
         @@default
+
 @title{"two columns"}
 @two_columns
     _left %p hello,everyone
@@ -98,6 +100,23 @@ S;
 
 please see more examples at  examples/php.haml which is parsed by examples/php.php
 
+Hint
+----
+
+these two snippet are same:
+```
+@box
+    _ this is title
+    _ this is content
+```
+
+```
+@box
+_ this is title
+_ this is content
+```
+code: \MtHaml\Snip\NodeVisitor\MakesurePlaceholderValue::enterSnipCaller, PlaceholderValue is appended to SnipCaller as child
+
 Getting Started
 -----
 
@@ -163,6 +182,7 @@ snip files by a snip file is configed by variable $__MtHamlSnip_uses when the sn
 
 * mixes : a team of snip files mixed with a snip file.
 they are configed by variable $__MtHamlSnip_mixes when the snip file is parsed by the default parser "\MtHaml\Snip\Snip\SnipFileParser"
+
 
 Precautions
 ----
@@ -239,7 +259,7 @@ Output always is
 no matter there is snip named title in common1.php or common2.php.
 
 
-one extra feature : HtmlTag
+extra feature 1 : HtmlTag
 -----
 html tags can be used normally,not only
 ```
@@ -257,7 +277,7 @@ This feature enables you to copy any html code into a haml file, only make sure 
 code: '<div>' is parse as HtmlTag, see MtHaml\Snip\Parser::parseHtmlTag
 
 
-one extra feature : prepare
+extra feature 2 : prepare
 -----
 this is a feature whic has no relation with snip.
 
@@ -334,5 +354,4 @@ Development memorandum
 
 9. SnipCaller and Snip content, PlaceHolder and Placehoder value, they are abstracted by FirstInterface and SecondInterface for whitespace removel hack.
 
-10. hacks may result in confusion or infinite loop.
-for example, if PlaceholderDefaultCaller implemented FirstInterface,it's easy to make mistakes because there's anoter FirstInterface Placeholder exist , it's difficult to let '$node->addChild' works well.
+10. PlaceholderDefaultCaller does not implement FirstInterface for simpleness, '$node->addChilds' is used.

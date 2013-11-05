@@ -21,6 +21,10 @@ class MakesurePlaceholderValue extends VisitorAbstract
     }
     function enterSnipCaller(SnipCaller $node)
     {
+        while(($next=$node->getNextSibling()) instanceof PlaceholderValue){
+            $node->addChild($next);
+        }
+
         $mustValueType=false;
         if($node->hasChilds()){
             foreach ($node->getChilds() as $child) {

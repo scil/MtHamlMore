@@ -12,6 +12,10 @@ class SecondPlaceholder extends Placeholder implements SecondInterface
         parent::__construct(array(),null);
         $this->first=$first;
     }
+    public function hasFirst()
+    {
+        return !!($this->first);
+    }
     public function getFirst()
     {
         return $this->first;

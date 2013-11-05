@@ -14,6 +14,10 @@ class SecondRoot extends Root implements SecondInterface
         $this->first=$first;
 
     }
+    public function hasFirst()
+    {
+        return !!($this->first);
+    }
     public function getFirst()
     {
         return $this->first;

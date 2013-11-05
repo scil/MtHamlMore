@@ -83,7 +83,7 @@ abstract class NodeAbstract
         $node=$this;
         $next=$this->_next($this);
         // if the last child, should check if in a SecondInterface parent
-        while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface)){
+        while (is_null($next) && (($parent=$node->parent) instanceof SecondInterface) && $parent->hasFirst()){
             $node=$parent->getFirst();
             $next=$this->_next($node);
         }
@@ -92,11 +92,9 @@ abstract class NodeAbstract
     protected function _next($node)
     {
         $next=$node->nextSibling;
-        while($next instanceof FirstInterface){
-            if ($next->hasSecond()){
-                $childs = $next->getSecond()->getChilds();
-                $next=$childs[0];
-            }
+        while($next instanceof FirstInterface and $next->hasSecond()){
+            $childs = $next->getSecond()->getChilds();
+            $next=$childs[0];
         }
         return $next;
     }
@@ -113,7 +111,7 @@ abstract class NodeAbstract
         $node=$this;
         $pre=$this->_pre($this);
         // if the first child, should check if in a SecondInterface parent
-        while (is_null($pre) && (($parent=$node->parent) instanceof SecondInterface)){
+        while (is_null($pre) && (($parent=$node->parent) instanceof SecondInterface) && $parent->hasFirst()){
             $node=$parent->getFirst();
             $pre=$this->_pre($node);
         }
@@ -122,11 +120,9 @@ abstract class NodeAbstract
     protected function _pre($node)
     {
         $pre=$node->previousSibling;
-        while($pre instanceof FirstInterface){
-            if ($pre->hasSecond()){
-                $childs = $pre->getSecond()->getChilds();
-                $pre=end($childs);
-            }
+        while($pre instanceof FirstInterface && $pre->hasSecond()){
+            $childs = $pre->getSecond()->getChilds();
+            $pre=end($childs);
         }
         return $pre;
 

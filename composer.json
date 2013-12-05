@@ -1,5 +1,5 @@
 {
-    "name": "scil/MtHamlMore",
+    "name": "scil/mthaml-more",
     "type": "library",
     "description": "Add more features like snippet to MtHaml, one way to \"Don't Reinvent the Wheel\"",
     "keywords": ["HAML","snippet"],

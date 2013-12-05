@@ -1,0 +1,33 @@
+--FILE--
+<?php
+putenv('COMPUTERNAME=SNIP');
+echo compilePhpMoreHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@title
+@ordered
+@ordered
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+
+$title=function(){
+    $computer=getenv('COMPUTERNAME');
+    return "%h1 welcome to $computer";
+};
+
+$ordered=function(){
+    static $number=0;
+    ++$number;
+    return "%h1 title $number";
+};
+
+--EXPECT--
+<h1>welcome to SNIP</h1>
+<h1>title 1</h1>
+<h1>title 2</h1>
+

@@ -1,0 +1,72 @@
+--FILE--
+<?php
+echo compilePhpMoreHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@box
+    _ myboxclass
+    _ mytitle
+    _ mybody
+@box2
+    _ myboxclass
+    _ mytitlecontent
+    _ mybody
+    _ mybodycontent
+@box3
+    _ myboxclass
+    _ mytitlecontent
+    _ mybody
+    _ mybodycontent
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+$box=<<<S
+.{@@}
+    .title
+        @@@
+    .body
+        @@@
+S;
+$box2=<<<S
+.{@@}
+    .title
+        @@@
+    .{@@}
+        @@@
+S;
+$box3=<<<S
+.{@@}
+    .title
+        @@@
+    .{@@} {@@}
+S;
+?>
+
+--EXPECT--
+<div class="myboxclass">
+  <div class="title">
+    mytitle
+  </div>
+  <div class="body">
+    mybody
+  </div>
+</div>
+<div class="myboxclass">
+  <div class="title">
+    mytitlecontent
+  </div>
+  <div class="mybody">
+    mybodycontent
+  </div>
+</div>
+<div class="myboxclass">
+  <div class="title">
+    mytitlecontent
+  </div>
+  <div class="mybody">mybodycontent</div>
+</div>
+

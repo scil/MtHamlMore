@@ -12,14 +12,14 @@
          bootstrap="test/bootstrap.php"
 >
   <testsuites>
-    <testsuite name="MtHamlSnip Test Suite">
-      <directory>./test/MtHaml/Snip</directory>
+    <testsuite name="MtHamlMore Test Suite">
+      <directory>./test/MtHaml/More</directory>
     </testsuite>
   </testsuites>
 
   <filter>
     <whitelist>
-      <directory suffix=".php">./lib/MtHaml/Snip </directory>
+      <directory suffix=".php">./lib/MtHaml/More </directory>
     </whitelist>
   </filter>
 </phpunit>

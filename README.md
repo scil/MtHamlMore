@@ -1,9 +1,9 @@
-MtHamlSnip
+MtHamlMore
 ==========
 
-Add Snip to MtHaml,  one way to “Don't Reinvent the Wheel".
+Add more features like snippet to MtHaml,  main purpose is “Don't Reinvent the Wheel".
 
-Currently only support php, not Twig.
+Currently only php supported , no Twig.
 
 Demo
 ----
@@ -103,7 +103,7 @@ please see more examples at  examples/php.haml which is parsed by examples/php.p
 Hint
 ----
 
-these two snippet are same:
+these two snippets are same:
 ```
 @box
     _ this is title
@@ -115,7 +115,7 @@ these two snippet are same:
 _ this is title
 _ this is content
 ```
-code: \MtHaml\Snip\NodeVisitor\MakesurePlaceholderValue::enterSnipCaller, PlaceholderValue is appended to SnipCaller as child
+code: \MtHaml\More\NodeVisitor\MakesurePlaceholderValue::enterSnipCaller, PlaceholderValue is appended to SnipCaller as child
 
 Getting Started
 -----
@@ -144,10 +144,10 @@ step 3:  haml file callSnip.haml
 
 step 4: php code
 ```
-// ROOT_DIR is the root dir of MtHamlSnip
-require_once ROOT_DIR . '/lib/MtHaml/Snip/entry.php';
+// ROOT_DIR is the root dir of MtHamlMore
+require_once ROOT_DIR . '/lib/MtHaml/More/entry.php';
 $hamlfile=__DIR__ . '/php.haml';
-$compiled = compilePhpSnipHaml(
+$compiled = compilePhpMoreHaml(
     file_get_contents($hamlfile),
     array(
         'uses'=>array('mysnips.php'),
@@ -167,10 +167,10 @@ default values can be defined for a Placeholder, and you can call default values
 
 * InlinePlaceholder :it's different with Placeholder, just like block element vs inline element in web DOM.
     * Warning: InlineSnipCaller is not a type of Node, it's parsed before parsing haml tree, see:
-        MtHaml\Snip\Environment::parseInlinePlaceholder
+        MtHaml\More\Environment::parseInlinePlaceholder
 
 * snip file : where snips live. snip file is parsed by the instance of Snip\SnipHouseInterface , which should be appointed at the first line of snip file
-    * example: -# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+    * example: -# SnipParser="\MtHaml\More\Snip\SnipFileParser"
     * this is the default parser, you can ignore it.
 
 * SnipCaller : a Node in a haml tree used to insert snip. "@box" is a SnipCaller used to insert snip "box".
@@ -178,10 +178,10 @@ default values can be defined for a Placeholder, and you can call default values
 * InlineSnipCaller : like InlinePlaceholder
 
 * uses : a team of snip files used by a haml file or a snip file. snip files used by a haml is configed by option 'uses',
-snip files by a snip file is configed by variable $__MtHamlSnip_uses when the snip file is parsed by the default parser "\MtHaml\Snip\Snip\SnipFileParser"
+snip files by a snip file is configed by variable $__MtHamlMore_uses when the snip file is parsed by the default parser "\MtHaml\More\Snip\SnipFileParser"
 
 * mixes : a team of snip files mixed with a snip file.
-they are configed by variable $__MtHamlSnip_mixes when the snip file is parsed by the default parser "\MtHaml\Snip\Snip\SnipFileParser"
+they are configed by variable $__MtHamlMore_mixes when the snip file is parsed by the default parser "\MtHaml\More\Snip\SnipFileParser"
 
 
 Precautions
@@ -212,7 +212,7 @@ Precautions
     ```
     @box{"my title" "my body}
     ```
-    source code: \MtHaml\Snip\Parser::parseSnipCallerAttributes
+    source code: \MtHaml\More\Parser::parseSnipCallerAttributes
 
 ### snip file order when searching snip
 if your set uses
@@ -229,14 +229,14 @@ for example, a haml file shiped with some snips
 @name
 -#
   <?php
-  $name='MtHamlSnip';
+  $name='MtHamlMore';
 ```
-comppiled output is always 'MtHamlSnip' regardless of any snip files are supplied using 'uses'=>array().
+comppiled output is always 'MtHamlMore' regardless of any snip files are supplied using 'uses'=>array().
 
 example 2, a snip file
 ```
 <?php
-$__MtHamlSnip_uses=__DIR__.'\common1.php;' . __DIR__.'\common2.php;';
+$__MtHamlMore_uses=__DIR__.'\common1.php;' . __DIR__.'\common2.php;';
 $title=<<<S
 %h1
     @@@
@@ -274,14 +274,14 @@ which is supported by MtHaml, but also
 ```
 This feature enables you to copy any html code into a haml file, only make sure code apply haml indent syntax.
 
-code: '<div>' is parse as HtmlTag, see MtHaml\Snip\Parser::parseHtmlTag
+code: '<div>' is parse as HtmlTag, see MtHaml\More\Parser::parseHtmlTag
 
 
 extra feature 2 : prepare
 -----
 this is a feature whic has no relation with snip.
 
-if you set options 'prepare'=>true , MtHamlSnip will first change code
+if you set options 'prepare'=>true , MtHamlMore will first change code
 ```
 {% $address='http://program-think.blogspot.com';$name='scil' %}
 %div my name is {= $name =}, i love this IT blog {= $address =} which is blocked by GFW
@@ -303,7 +303,7 @@ this is normal haml code,which will be compiled to
 
 notice: {% .. %} must monopolize one line, because regular expression uses '^' and '$'.
 
-code: MtHaml\Snip\Environment::prepare
+code: MtHaml\More\Environment::prepare
 
 
 Development Rule
@@ -312,13 +312,13 @@ Development Rule
 1. no change to MtHaml
 
 2. place some variables at Enviroment::options. Maybe better at Root of Tree,but Rule 1 would be destroyed.
-    1. code: MtHaml\Snip\Environment::construct
-    2. haml file name also be placed in Enviroment::options, so it's easy to track the process of calling snip, see MtHaml\Snip\NodeVisitor\PhpRenderer::options['filename']
+    1. code: MtHaml\More\Environment::construct
+    2. haml file name also be placed in Enviroment::options, so it's easy to track the process of calling snip, see MtHaml\More\NodeVisitor\PhpRenderer::options['filename']
     3. how to access Environment object?
         1. use $this->env in Parser ( add attribute $env )
         2. use $this->env in Renderer ( availabel at MtHaml)
         3. SnipCaller::getEnv(). Environment obj is attached with SnipCaller to make sure snip parsed using right use files.
-            see: test/MtHaml/Snip/Tests/fixtures/environment/4.3.use snip from other snip file 2.test
+            see: test/MtHaml/More/Tests/fixtures/environment/4.3.use snip from other snip file 2.test
         4. no formal way to access Environment in Visitor except Renderer, you can use $GLOBAL to access an Environment object when debugging.
 
 3. there's one except, MtHaml is hacked using composer.json only for whitespace removel (flag < and >).
@@ -326,27 +326,27 @@ Development Rule
 Development memorandum
 --------
 
-1. Snip called by SnipCaller is invoked by visitor ApplySnip before render stage.  code : MtHaml\Snip\NodeVisitor\ApplySnip::enterSnipCaller
+1. Snip called by SnipCaller is invoked by visitor ApplySnip before render stage.  code : MtHaml\More\NodeVisitor\ApplySnip::enterSnipCaller
 
 2. Snip called by InlineSnipCaller is invokded before parse stage.  code:
-    1. MtHaml\Snip\Environment::parseInlineSnipCaller  (InlineSnipCaller is not parsed to an instance of Node for simplify)
+    1. MtHaml\More\Environment::parseInlineSnipCaller  (InlineSnipCaller is not parsed to an instance of Node for simplify)
 
 3. SnipCaller/InlineSnipCaller can call snip located same file, because current file is added to snipfiles array. code:
-    1. MtHaml\Snip\Snip\SnipHouse::getSnipAndFiles
+    1. MtHaml\More\Snip\SnipHouse::getSnipAndFiles
 
 4. Output of InlineSnipCaller and InlinePlaceholder are trimed, code :
-    1. MtHaml\Snip\Snip\SnipHouse::parseInlineSnipCaller   rtrim(x,"\n")
-    2. MtHaml\Snip\Snip\SnipHouse::renderSnipTree   rtrim(x,"\n") and ltrim(x), does this ltrim kill any spaces that not is indent space?
+    1. MtHaml\More\Snip\SnipHouse::parseInlineSnipCaller   rtrim(x,"\n")
+    2. MtHaml\More\Snip\SnipHouse::renderSnipTree   rtrim(x,"\n") and ltrim(x), does this ltrim kill any spaces that not is indent space?
 
 5. the only use of Log is to record the process of calling snip. code:
-    1. MtHaml\Snip\Environment::__construct  $options['log'] ; $options['debug'](enable log)
-    2. MtHaml\Snip\NodeVisitor\PhpRenderer::enterSnipCaller
+    1. MtHaml\More\Environment::__construct  $options['log'] ; $options['debug'](enable log)
+    2. MtHaml\More\NodeVisitor\PhpRenderer::enterSnipCaller
 
 6. how indent works well? code:
-    1. MtHaml\Snip\Environment::__construct  $options['baseIndent']
-    2. MtHaml\Snip\NodeVisitor\ApplySnip::__construct
+    1. MtHaml\More\Environment::__construct  $options['baseIndent']
+    2. MtHaml\More\NodeVisitor\ApplySnip::__construct
 
-7. "@snipName %h1 hello", "_ %h1 hello", "@@@ %h1 hello", there are legal.see code: MtHaml\Snip\Parser::parseSnipCaller, parsePlaceholder, parsePlaceholderValue, they all use " $this->parseStatement($buf)) "
+7. "@snipName %h1 hello", "_ %h1 hello", "@@@ %h1 hello", there are legal.see code: MtHaml\More\Parser::parseSnipCaller, parsePlaceholder, parsePlaceholderValue, they all use " $this->parseStatement($buf)) "
 
 8. How whitespace removel (< >) work ?
 	1. hack node relation (getParent/getNextSibling/getPreviousSibling/getFirstChild/getLastChild) . maybe it's not jet mature. see : hackNodeAbstract.php, hackNestAbstract.php

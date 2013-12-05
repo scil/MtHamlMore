@@ -1,4 +1,4 @@
--# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
 @title{"text snip"}
 %p
   @more
@@ -63,10 +63,10 @@
   _ middle: 4/12
   _ right: 6/12
 
-@snipInSnipTitle{"$__MtHamlSnip_uses"}
+@snipInSnipTitle{"$__MtHamlMore_uses"}
 @common
 
-@snipInSnipTitle{"$__MtHamlSnip_mixes"}
+@snipInSnipTitle{"$__MtHamlMore_mixes"}
 @abstract my body
 
 @title{"InlineSnipCaller"}
@@ -134,7 +134,7 @@ snip more's content is @{more}
 -#
   <?php
   $currentfile=function(){
-    $pos=strrpos(__FILE__,'MtHamlSnip');
+    $pos=strrpos(__FILE__,'MtHamlMore');
     return str_replace('\\','/',substr(__FILE__,$pos));
   }
   ?>

@@ -1,9 +1,4 @@
 -# SnipParser="\MtHaml\More\Snip\SnipFileParser"
 <?php
 
-$abstract_box=<<<S
-.title
-    hello
-.body
-    @@@
-S;
+$common_name='common';

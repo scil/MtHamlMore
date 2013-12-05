@@ -1,9 +1,9 @@
 {
-    "name": "scil/MtHamlSnip",
+    "name": "scil/MtHamlMore",
     "type": "library",
-    "description": "Add Snip function to MtHaml, one way to \"Don't Reinvent the Wheel\"",
+    "description": "Add more features like snippet to MtHaml, one way to \"Don't Reinvent the Wheel\"",
     "keywords": ["HAML"],
-    "homepage": "https://github.com/scil/MtHamlSnip",
+    "homepage": "https://github.com/scil/MtHamlMore",
     "license": "MIT",
     "authors": [
         {
@@ -15,9 +15,9 @@
         "mthaml/mthaml": ">=1.3.0"
     },
     "autoload": {
-		"classmap": ["lib/MtHaml/Snip/Node/hackNodeAbstract.php","lib/MtHaml/Snip/Node/hackNestAbstract.php"],
+		"classmap": ["lib/MtHaml/More/Node/hackNodeAbstract.php","lib/MtHaml/More/Node/hackNestAbstract.php"],
         "psr-0": {
-            "MtHaml\\Snip\\": "lib/"
+            "MtHaml\\More\\": "lib/"
         }
     }
 }

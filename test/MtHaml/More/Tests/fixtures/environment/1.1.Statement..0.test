@@ -1,0 +1,20 @@
+--FILE--
+<?php
+
+echo compilePhpMoreHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+--HAML--
+@more
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+
+// string 'more...' will be parsed as a Statement node, so a newline character will follow
+$more="more...";
+
+--EXPECT--
+more...
+

@@ -1,8 +1,8 @@
--# SnipParser="\MtHaml\Snip\Snip\SnipFileParser"
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
 <?php
 // special vars, see README.md::Glossary uses && mixes
-$__MtHamlSnip_uses=__DIR__.'\abstract.php';
-$__MtHamlSnip_mixes=__DIR__.'\common.php';
+$__MtHamlMore_uses=__DIR__.'\abstract.php';
+$__MtHamlMore_mixes=__DIR__.'\common.php';
 
 $css=function($url){
   return  "%link(href=\"$url\" rel=\"stylesheet\"  )";

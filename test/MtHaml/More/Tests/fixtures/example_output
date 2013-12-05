@@ -1,0 +1,200 @@
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 1 : text snip</h2>
+<p>
+  more...
+</p>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 2 : element snip</h2>
+<div id="footer" class="mid">
+  <p>footer</p>
+  <hr>
+  <p>Powered by MtHaml and MtHamlSnip</p>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 3 : placeholders</h2>
+<div class="title">
+  this is title
+</div>
+<div class="body">
+  <span>this is body</span>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 4 : named placeholders</h2>
+<div class="title">
+  this is title
+</div>
+<div class="body">
+  <span>this is body</span>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 5 : named-and-unnamed-mixed placeholders</h2>
+<div class="title">
+  first title
+</div>
+<div class="body">
+  <p>
+    item1
+  </p>
+</div>
+<div class="title">
+  second title
+</div>
+<div class="body">
+  <p>
+    item2
+  </p>
+  <p>
+    item3
+  </p>
+  <div>
+    <div class="last" style="color:red">
+      last item
+    </div>
+  </div>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 6 : placeholder with default value</h2>
+<div class="title">
+  snip title
+</div>
+<div class="body">
+  body
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 7 : closure snip</h2>
+<div class="body">
+  body
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 8 : snip attributes</h2>
+<div class="person">
+  <div class="name">ivy</div>
+  <div class="age">21</div>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 9 : attributes default value</h2>
+<div class="person">
+  <div class="name">scil</div>
+  <div class="age">21</div>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 10 : snip attributes with prepare feature</h2>
+<div class="person">
+  <div class="name">ivy1</div>
+  <div class="age">21</div>
+</div>
+<div class="person">
+  <div class="name">ivy2</div>
+  <div class="age">21</div>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 11 : snip in snip 1: use snip located at haml file</h2>
+MtHamlMore/examples/php.haml
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 12 : snip in snip 2: use snip located at same snip file</h2>
+<div class="person">
+  <div class="name">scil</div>
+  <div class="age">33</div>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 13 : snip in snip 3</h2>
+<div class="title">
+  TITLE defined by caller snip
+</div>
+<div class="body">
+  BODY defined by user
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 14 : snip in snip 4: twitter bootstrap v2.3.2 grid </h2>
+<link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css" rel="stylesheet">
+<div class="row-fluid show-grid">
+  <div class="span2">
+    left: 2/12
+  </div>
+  <div class="span4">
+    middle: 4/12
+  </div>
+  <div class="span6">
+    right: 6/12
+  </div>
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 15 : snip in snip 5: $__MtHamlMore_uses</h2>
+<div class="title">
+  hello
+</div>
+<div class="body">
+  thank you
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 16 : snip in snip 6: $__MtHamlMore_mixes</h2>
+<div class="title">
+  hello
+</div>
+<div class="body">
+  my body
+</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 17 : InlineSnipCaller</h2>
+snip more's content is more...
+<div>i will call snip more using @{more}</div>
+<div>this is a long article, click here to see more...</div>
+<h2 style="font-size:1.5em;margin-top:20px;border:4px solid grey;padding:10px">example 18 : InlinePlaceholder</h2>
+<dl>
+  <dt>unnamed inlineplaceholder without default value</dt>
+  <dd>
+    hello,Tom
+  </dd>
+</dl>
+<dl>
+  <dt>Syntax</dt>
+  <dd>
+    hello,{@@}
+  </dd>
+</dl>
+<dl>
+  <dt>inlineplaceholder with defautlvalue:</dt>
+  <dd>
+    hello,scil
+  </dd>
+</dl>
+<dl>
+  <dt>inlineplaceholder with defautlvalue:</dt>
+  <dd>
+    hello,Jim
+  </dd>
+</dl>
+<dl>
+  <dt>Syntax:</dt>
+  <dd>
+    hello,{@:scil@}
+  </dd>
+</dl>
+<dl>
+  <dt>named inlineplaceholder</dt>
+  <dd>
+    hello,Jim
+  </dd>
+</dl>
+<dl>
+  <dt>Syntax:</dt>
+  <dd>
+    hello,{@name@}
+  </dd>
+</dl>
+<dl>
+  <dt>named inlineplaceholder with default value</dt>
+  <dd>
+    hello,scil
+  </dd>
+</dl>
+<dl>
+  <dt>named inlineplaceholder with default value</dt>
+  <dd>
+    hello,Jim
+  </dd>
+</dl>
+<dl>
+  <dt>Syntax:</dt>
+  <dd>
+    hello,{@name:scil@}
+  </dd>
+</dl>
+<style type="text/css">
+/*<![CDATA[*/
+  .title {
+    border-bottom:1px solid grey;
+    width:40%;}
+  .mid {
+    width:90%;
+    margin:0 auto;
+    text-align:center;}
+  body{
+    width:60%;
+    margin:30px auto;}
+  
+/*]]>*/
+</style>

@@ -1,0 +1,44 @@
+--FILE--
+<?php
+echo compilePhpMoreHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@box
+    _ hello world!
+    _
+        %p my first
+        %p thank you
+@namedBox
+    _title hello world!
+    _body1 %p my first
+    _body2 %p thank you
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+$box=<<<S
+.title<
+    @@@
+.body<
+    @@@
+S;
+$namedBox=<<<S
+.title<
+    @@@title
+.body<
+    @@@body1
+    @@@body2
+S;
+?>
+
+--EXPECT--
+<div class="title">hello world!</div>
+<div class="body"><p>my first</p>
+<p>thank you</p></div>
+<div class="title">hello world!</div>
+<div class="body"><p>my first</p>
+<p>thank you</p></div>
+

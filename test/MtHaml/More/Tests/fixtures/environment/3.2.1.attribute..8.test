@@ -1,0 +1,26 @@
+--FILE--
+<?php
+echo compilePhpMoreHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@uppertitle(hello)
+@uppertitle
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+
+$uppertitle=function($text="default text"){
+    $text=strtoupper($text);
+    return <<<S
+%h1 $text
+S;
+};
+
+--EXPECT--
+<h1>HELLO</h1>
+<h1>DEFAULT TEXT</h1>
+

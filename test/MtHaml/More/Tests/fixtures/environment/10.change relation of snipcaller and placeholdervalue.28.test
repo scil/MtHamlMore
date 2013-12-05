@@ -1,0 +1,27 @@
+--FILE--
+<?php
+echo compilePhpMoreHaml( $parts['HAML'],array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@footer
+_top my footer
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+$footer=<<<S
+.footer
+    @@@top
+    @@@bottom powered by MtHaml
+S;
+?>
+
+--EXPECT--
+<div class="footer">
+  my footer
+  powered by MtHaml
+</div>
+

@@ -46,7 +46,7 @@ class Placeholder extends NestAbstract implements FirstInterface
 
     public function getNodeName()
     {
-        return 'placeholder';
+        return 'Placeholder';
     }
 
     public function accept(NodeVisitorInterface $visitor)

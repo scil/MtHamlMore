@@ -25,7 +25,7 @@ class HtmlTag extends Tag
 
     public function getNodeName()
     {
-        return 'htmltag';
+        return 'HtmlTag';
     }
 
     public function accept(NodeVisitorInterface $visitor)

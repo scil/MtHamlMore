@@ -18,7 +18,7 @@ class PlaceholderDefaultCaller extends NestAbstract
 
     public function getNodeName()
     {
-        return 'placeholderdefaultvaluecaller';
+        return 'PlaceholderDefaultvalueCaller';
     }
 
     public function accept(NodeVisitorInterface $visitor)

@@ -22,7 +22,7 @@ class SecondPlaceholder extends Placeholder implements SecondInterface
     }
     public function getNodeName()
     {
-        return 'virtualplaceholder';
+        return 'SecondPlaceholder';
     }
 
     public function accept(NodeVisitorInterface $visitor)

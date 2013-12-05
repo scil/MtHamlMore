@@ -24,6 +24,6 @@ class SecondRoot extends Root implements SecondInterface
     }
     public function getNodeName()
     {
-        return 'secondroot';
+        return 'SecondRoot';
     }
 }

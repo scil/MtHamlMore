@@ -45,7 +45,7 @@ class SnipCaller extends NestAbstract implements FirstInterface
 
     public function getNodeName()
     {
-        return 'snipcaller';
+        return 'SnipCaller';
     }
 
     public function accept(NodeVisitorInterface $visitor)

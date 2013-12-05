@@ -25,7 +25,7 @@ class PlaceholderValue extends NestAbstract
 
     public function getNodeName()
     {
-        return 'placeholdercontent';
+        return 'PlaceholderValue';
     }
 
     public function accept(NodeVisitorInterface $visitor)

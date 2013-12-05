@@ -2,7 +2,7 @@
     "name": "scil/MtHamlMore",
     "type": "library",
     "description": "Add more features like snippet to MtHaml, one way to \"Don't Reinvent the Wheel\"",
-    "keywords": ["HAML"],
+    "keywords": ["HAML","snippet"],
     "homepage": "https://github.com/scil/MtHamlMore",
     "license": "MIT",
     "authors": [

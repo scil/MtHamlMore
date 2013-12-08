@@ -23,7 +23,7 @@ class Parser extends \MtHaml\Parser
 
     public function __construct(\MtHaml\Environment $env=null)
     {
-        $snipcaller=$env->getOption('snipcallerNode');
+        $snipcaller=$env->currentMoreEnv['snipcallerNode'];
         if(empty($snipcaller))
             parent::__construct();
         else
@@ -141,7 +141,7 @@ class Parser extends \MtHaml\Parser
 
             $attributes = $this->parseSnipCallerAttributes($buf);
 
-            $node = new SnipCaller($match['pos'][0], $snip_name,$this->env, $attributes);
+            $node = new SnipCaller($match['pos'][0], $snip_name,$this->env->currentMoreEnv, $attributes);
 
             $buf->skipWs();
 

@@ -4,16 +4,22 @@ use MtHaml\More\Environment;
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 
-// MtHamlMore special options:  ( prepare and debug are optional)
+// $moreOptions:  ( prepare and debug are optional)
 //    array(
 //        'filename'=>__DIR__.'/php.haml',
 //        'uses'=>array(__DIR__.'/snips/php.php'),
 //        'prepare'=>true,
 //        'debug'=>true,
 //    )
-function compilePhpMoreHaml($hamlstr,$options)
+function compilePhpMoreHaml($hamlstr,$options,$moreOptions=null)
 {
-    $env = new Environment('php_more',$options);
-    return $env->compileString($hamlstr, isset($options['filename'])?$options['filename']:'[unnamed]');
+    static $env;
+    if(!is_null($options))
+        $env = new Environment('php_more',$options);
+    if($env instanceof Environment)
+        return $env->compileString($hamlstr,$moreOptions);
+    else{
+        throw new \MtHaml\More\Exception\MoreException('plz supply 2nd arg when calling this func first time');
+    }
 }
 

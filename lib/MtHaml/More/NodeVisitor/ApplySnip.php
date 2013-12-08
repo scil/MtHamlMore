@@ -30,7 +30,7 @@ class ApplySnip extends VisitorAbstract
         $options =   array(
             'placeholdervalues' => $placeholdervalues,
             'baseIndent' =>  $this->indent,
-            'level' => $env->getOption('level')+1,
+            'level' => $env['level']+1,
             'snipcallerNode'=>$node,
         );
 

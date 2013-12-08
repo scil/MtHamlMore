@@ -3,7 +3,7 @@
 namespace MtHaml\More;
 
 use MtHaml\Exception;
-use MtHaml\More\Exception\SnipException;
+use MtHaml\More\Exception\MoreException;
 use MtHaml\More\NodeVisitor\ApplySnip;
 use MtHaml\More\Target\PhpMore;
 use MtHaml\Target\Php;
@@ -17,38 +17,16 @@ use MtHaml\More\Log\LogInterface;
 
 class Environment extends \MtHaml\Environment
 {
-    protected $snipHouse;
 
-    public function __construct($target, array $options = array())
-    {
-        if (isset($options['log']))
-            $this->setLog($options['log']);
+    public  $currentMoreEnv;
 
-        if (isset($options['placeholdervalues']))
-            $this->setPlaceholdervalues($options['placeholdervalues']);
-
-        //  see README.md : Development Rool 2
-        $options = $options + array(
-                'filename' => '',
-                'uses' => array(),
-                'snipname' => '',
-                'placeholdervalues' => null,
-                'prepare' => false,
-                'baseIndent' => 0,
-                'level' => 0,
-                'log' => null,
-                'debug' => false,
-                'snipcallerNode'=>null,
-                'parentenv'=>null,
-            );
-
-        parent::__construct($target, $options);
-    }
-
-    public function compileString($string, $filename,$returnRoot=false)
+    public function compileString($string, $moreOption,$returnRoot=false)
     {
         $prepareWork = false;
-        if ($this->getOption('prepare')) {
+        if(is_string($moreOption)) $moreOption=array('filename'=>$moreOption);
+        $this->currentMoreEnv=new MoreEnv($moreOption,$this);
+        $filename= $moreOption['filename'];
+        if ($this->currentMoreEnv['prepare']) {
             list($string, $filename, $prepareWork) = $this->prepare($string, $filename);
         }
 
@@ -68,8 +46,11 @@ class Environment extends \MtHaml\Environment
             $compiled = parent::compileString($string, $filename);
         }
 
-        if ($prepareWork && !$this->getOption('debug')) {
+        if ($prepareWork && !$this->currentMoreEnv['debug']) {
             unlink($filename);
+        }
+        if ( ($parent=$this->currentMoreEnv['parentenv'] ) instanceof MoreEnv){
+            $this->currentMoreEnv = $parent;
         }
         return $compiled;
 
@@ -131,11 +112,11 @@ class Environment extends \MtHaml\Environment
             if ($number % 2 == 0) {
                 $front = str_repeat('\\', $number / 2);
                 $options = array(
-                    'level' => $this->getOption('level') + 1,
+                    'level' => $this->currentMoreEnv['level'] + 1,
                 );
                 // trim any break line or indent space
                 $parsedSnip =  rtrim(
-                        self::parseSnip($matches[2], array(), $options, $this),
+                        self::parseSnip($matches[2], array(), $options, $this->currentMoreEnv),
                         "\n") ;
                 return $front . $parsedSnip;
             } else {
@@ -148,8 +129,8 @@ class Environment extends \MtHaml\Environment
     protected function parseInlinePlaceholder($string)
     {
 
-        if ($this->hasPlaceholdervalues()) {
-            $values = $this->getPlaceholdervalues();
+        if ($this->currentMoreEnv->hasPlaceholdervalues()) {
+            $values = $this->currentMoreEnv->getPlaceholdervalues();
             $nextMaybeUnnamedPlaceholderIndex = 0;
 
             $string = preg_replace_callback(
@@ -224,10 +205,10 @@ class Environment extends \MtHaml\Environment
                         }
                     }
 
-                    throw new SnipException('plz supply value for inlinePlaceholder ' . $name);
+                    throw new MoreException('plz supply value for inlinePlaceholder ' . $name);
                 }, $string);
 
-            $this->setPlaceholdervalues($values);
+            $this->currentMoreEnv->setPlaceholdervalues($values);
         }
 
         return $string;
@@ -253,68 +234,6 @@ class Environment extends \MtHaml\Environment
 
         $outputs = implode('', $outputs);
         return $trim? ltrim(rtrim($outputs,"\n")) :outputs;
-    }
-
-    function getLog()
-    {
-        if (empty($this->options['log'])) {
-            $log = new Log($this->options['debug']);
-            $this->setLog($log);
-        }
-        $log = $this->options['log'];
-        return $log;
-    }
-
-    function setLog(LogInterface $log)
-    {
-        $this->options['log'] = $log;
-    }
-
-    protected function snipsReady()
-    {
-        return $this->snipHouse instanceof SnipHouse;
-    }
-
-    function getSnipHouse()
-    {
-        if (!$this->snipsReady()) {
-            $this->setSnipHouse($this->options['uses'], $this->options['filename']);
-        }
-        return $this->snipHouse;
-    }
-
-    protected function setSnipHouse($S, $mainFile)
-    {
-        // instanceof is nessesary, because Environment maybe instansed in NodeVisitor\PhpRenderer
-        if ($S instanceof SnipHouse) {
-        } elseif (gettype($S) == 'string' || gettype($S) == 'array'){
-            $S = new SnipHouse($S, $mainFile);
-        }else{
-            throw new SnipException('require str or array or SnipHouse instance to setSnips');
-        }
-        $this->snipHouse = $S;
-    }
-
-    function hasPlaceholdervalues()
-    {
-        return !empty($this->options['placeholdervalues']);
-    }
-
-    function getPlaceholdervalues()
-    {
-        return $this->options['placeholdervalues'];
-    }
-
-    /*
-     * @param $v :array(array namedValues, array unnamedValues)
-     */
-    function setPlaceholdervalues(array $v)
-    {
-        if(count($v) == 2)
-            $this->options['placeholdervalues'] = $v;
-        else{
-            throw new SnipException(sprintf("there should two elements in array %s to set placeholder values",print_r($v,true)));
-            }
     }
 
 
@@ -348,8 +267,8 @@ class Environment extends \MtHaml\Environment
         $visitors[] = $this->getMakesurePlaceholderValueVisitor();
         // if is useless and harmful, because ApplyPlaceholderValueVisitor also apply placehodler default value
         //  if($this->hasPlaceholdervalues())
-        $visitors[] = $this->getApplyPlaceholderValueVisitor($this->getPlaceholdervalues());
-        $visitors[] = $this->getApplySnipVisitor($this->getOption('baseIndent'));
+        $visitors[] = $this->getApplyPlaceholderValueVisitor($this->currentMoreEnv->getPlaceholdervalues());
+        $visitors[] = $this->getApplySnipVisitor($this->currentMoreEnv['baseIndent']);
 
         $visitors[] = $this->getAutoclosevisitor();
         $visitors[] = $this->getAutoclosevisitor();
@@ -386,7 +305,7 @@ class Environment extends \MtHaml\Environment
             )
 * @param $parentEnv : the key reason of this argument is at README.md::Development Rule 2.3.3
 */
-    public static function parseSnip($snipName, array $attributes = array(), $options = array(), Environment $parentEnv,$returnRoot=false)
+    public static function parseSnip($snipName, array $attributes = array(), $options = array(), MoreEnv $parentMoreEnv,$returnRoot=false)
     {
 
 
@@ -396,30 +315,145 @@ class Environment extends \MtHaml\Environment
                 'level' => 0,
             );
 
-        $snipHouse = $parentEnv->getSnipHouse();
-        $log = $parentEnv->getLog();
+        $snipHouse = $parentMoreEnv->getSnipHouse();
         $front = str_repeat("....", $options['level'] - 1);
-        $log->info($front . 'HAML : ' . $parentEnv->getOption('filename'));
-        $log->info($front . "call snip : [$snipName]");
+
+        if($parentMoreEnv['debug']){
+            $log = $parentMoreEnv->getLog();
+            $log->info($front . 'HAML : ' . $parentMoreEnv['filename']);
+            $log->info($front . "call snip : [$snipName]");
+        }
+
         list($snipHaml, $fileName, $snips) = $snipHouse->getSnipAndFiles($snipName, $attributes);
-        $log->info($front . "located at file $fileName");
-        $log->info();
+
+        if($parentMoreEnv['debug']){
+            $log->info($front . "located at file $fileName");
+            $log->info();
+        }
 
 
-        $haml = new Environment('php_more',
+        $moreOptions =
             array(
                 'snipname' => $snipName,
                 'uses' => $snips,
                 'filename' => $fileName,
                 'prepare' => false,
-                'parentenv'=> $parentEnv,
+                'parentenv'=> $parentMoreEnv,
             )
             + $options
-            + $parentEnv->getOptions()
-        );
+            + $parentMoreEnv->getOptions()
+        ;
 
-        return $haml->compileString($snipHaml, $fileName, $returnRoot);
+        $haml= $parentMoreEnv->getBelongTo();
+        return $haml->compileString($snipHaml, $moreOptions, $returnRoot);
 
 
     }
+}
+
+class MoreEnv implements \ArrayAccess
+{
+    private $belongTo;
+    protected $options;
+    protected $snipHouse;
+
+    function __construct(array $options,Environment $env)
+    {
+        $this->options = $options + array(
+                'filename' => '',
+                'uses' => array(),
+                'snipname' => '',
+                'placeholdervalues' => null,
+                'prepare' => false,
+                'baseIndent' => 0,
+                'level' => 0,
+                'log' => null,
+                'debug' => false,
+                'snipcallerNode'=>null,
+                'parentenv'=>null,
+            );
+        if (isset($options['log']))
+            $this->setLog($options['log']);
+
+        if (isset($options['placeholdervalues']))
+            $this->setPlaceholdervalues($options['placeholdervalues']);
+
+        $this->belongTo=$env;
+
+    }
+    function offsetExists($offset){
+        return isset($this->options[$offset]);
+    }
+    function offsetGet($offset){
+        return $this->options[$offset];
+    }
+    function offsetSet($offset, $value){}
+    function offsetUnset($offset){}
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    function getBelongTo()
+    {
+        return $this->belongTo;
+    }
+
+    function getLog()
+    {
+        if (empty($this->options['log'])) {
+            $log = new Log($this->options['debug']);
+            $this->setLog($log);
+        }
+        $log = $this->options['log'];
+        return $log;
+    }
+
+    function setLog(LogInterface $log)
+    {
+        $this->options['log'] = $log;
+    }
+
+    function getSnipHouse()
+    {
+        if (!($this->snipHouse instanceof SnipHouse)) {
+            $this->setSnipHouse($this->options['uses'], $this->options['filename']);
+        }
+        return $this->snipHouse;
+    }
+
+    protected function setSnipHouse($S, $mainFile)
+    {
+        // instanceof is nessesary, because Environment maybe instansed in NodeVisitor\PhpRenderer
+        if ($S instanceof SnipHouse) {
+        } elseif (gettype($S) == 'string' || gettype($S) == 'array'){
+            $S = new SnipHouse($S, $mainFile);
+        }else{
+            throw new SnipException('require str or array or SnipHouse instance to setSnips');
+        }
+        $this->snipHouse = $S;
+    }
+
+    function hasPlaceholdervalues()
+    {
+        return !empty($this->options['placeholdervalues']);
+    }
+
+    function getPlaceholdervalues()
+    {
+        return $this->options['placeholdervalues'];
+    }
+
+    /*
+     * @param $v :array(array namedValues, array unnamedValues)
+     */
+    function setPlaceholdervalues(array $v)
+    {
+        if(count($v) == 2)
+            $this->options['placeholdervalues'] = $v;
+        else{
+            throw new SnipException(sprintf("there should two elements in array %s to set placeholder values",print_r($v,true)));
+        }
+    }
+
 }

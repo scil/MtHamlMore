@@ -21,11 +21,14 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 
         $hamlfile=self::$exampleDir . '/php.haml';
 
-        $compiled = compilePhpMoreHaml( file_get_contents($hamlfile),array(
-            'uses'=>array(self::$exampleDir.'/snips/php.php'),
-            'filename'=>$hamlfile,
-            'prepare'=>true,
-            'enable_escaper' => false,
+        $compiled = compilePhpMoreHaml( file_get_contents($hamlfile),
+            array(
+                'enable_escaper' => false,
+            ),
+            array(
+                'uses'=>array(self::$exampleDir.'/snips/php.php'),
+                'filename'=>$hamlfile,
+                'prepare'=>true,
         ));
 
         $this->assertEquals(file_get_contents(self::$expectedOutputFile),$compiled);

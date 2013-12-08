@@ -10,7 +10,7 @@ use MtHaml\More\NodeVisitor\VisitorInterface;
 class SnipCaller extends NestAbstract implements FirstInterface
 {
     protected $snipName;
-    protected $env;
+    protected $env; // MoreEnv
     protected $attributes;
     protected $second;
 

@@ -149,10 +149,10 @@ require_once ROOT_DIR . '/lib/MtHaml/More/entry.php';
 $hamlfile=__DIR__ . '/php.haml';
 $compiled = compilePhpMoreHaml(
     file_get_contents($hamlfile),
+    array( 'enable_escaper' => false,),
     array(
         'uses'=>array('mysnips.php'),
         'filename'=>$hamlfile,
-        'enable_escaper' => false,
 ));
 echo "<h1>rendered template:</h1>\n";
 echo $compiled;
@@ -309,19 +309,16 @@ code: MtHaml\More\Environment::prepare
 Development Rule
 -----
 
-1. no change to MtHaml
+1. no change to MtHaml.there's one except, MtHaml is hacked using composer.json only for whitespace removel (flag < and >).
 
-2. place some variables at Enviroment::options. Maybe better at Root of Tree,but Rule 1 would be destroyed.
-    1. code: MtHaml\More\Environment::construct
-    2. haml file name also be placed in Enviroment::options, so it's easy to track the process of calling snip, see MtHaml\More\NodeVisitor\PhpRenderer::options['filename']
-    3. how to access Environment object?
-        1. use $this->env in Parser ( add attribute $env )
-        2. use $this->env in Renderer ( availabel at MtHaml)
-        3. SnipCaller::getEnv(). Environment obj is attached with SnipCaller to make sure snip parsed using right use files.
+2. place some variables at MoreEnv::options.
+    1. code: MtHaml\More\MoreEnv::__construct
+    2. haml file name also be placed in MoreEnv, so it's easy to track the process of calling snip, see MtHaml\More\Environment::parseSnip
+    3. how to access MoreEnv object?
+        1. use $this->currentMoreEnv in Environment
+        2. SnipCaller::getEnv(). MoreEnv obj is attached with SnipCaller to make sure snip parsed using right use files.
             see: test/MtHaml/More/Tests/fixtures/environment/4.3.use snip from other snip file 2.test
-        4. no formal way to access Environment in Visitor except Renderer, you can use $GLOBAL to access an Environment object when debugging.
 
-3. there's one except, MtHaml is hacked using composer.json only for whitespace removel (flag < and >).
 
 Development memorandum
 --------

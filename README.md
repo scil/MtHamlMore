@@ -202,15 +202,20 @@ Precautions
     @box(title="my_title" my_body)
     @box(body="my_body" my_title)
     ```
+    ruby style is also allowed:
+    ```
+    @box{"my_title","my_body"}
+    @box{:title => "my_title",:body => "my_body"}
+    ```
 
 2. SnipCaller Attributes are parsed using Tag Attributes method, so SnipCaller Attributes syntax must observe Tag Attributes syntax.
     for example , it's illegal for html style
     ```
-    @box("my title" "my body}
+    @box("my title" "my body"}
     ```
     you should use ruby style
     ```
-    @box{"my title" "my body}
+    @box{"my title" "my body"}
     ```
     source code: \MtHaml\More\Parser::parseSnipCallerAttributes
 

@@ -9,6 +9,10 @@ echo compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
 --HAML--
 @uppertitle(hello)
 @uppertitle
+@uppertitle(text="hello")
+@uppertitle{"hello"}
+@uppertitle{:text=>"hello"}
+@uppertitle{"text"=>"hello"}
 --SNIPS--
 -# SnipParser="\MtHaml\More\Snip\SnipFileParser"
 <?php
@@ -23,4 +27,8 @@ S;
 --EXPECT--
 <h1>HELLO</h1>
 <h1>DEFAULT TEXT</h1>
+<h1>HELLO</h1>
+<h1>HELLO</h1>
+<h1>HELLO</h1>
+<h1>HELLO</h1>
 

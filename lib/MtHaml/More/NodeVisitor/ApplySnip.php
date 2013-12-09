@@ -74,14 +74,16 @@ class ApplySnip extends VisitorAbstract
 //          name: Text(content="123")
 //          value: null
 //      ("hello world")   // not valid for Html style, ruby style works, see below
-//      ("title"=ok)   // not valid for Html style, ruby style works
-//      (title=6+4) // not valid for Snipcaller att, because Insert is node allowed
+//      ("title"=ok)   // not valid for Html style, because Insert is not allowed
+//          value: InterpolatedString( childs =array( Text("title") ))
+//          value: Insert(content="ok")
+//      (title=6+4) // not valid for Snipcaller att, because Insert is not allowed
 //          name: Text(content="title")
 //          value: Insert(content="6+4")
-//       (title=#{6+4})   // not valid for Snipcaller att, because Insert is node allowed
+//       (title=#{6+4})   // not valid for Snipcaller att, because Insert is not allowed
 //          name: Text(content="title")
 //          value: Insert(content="#{6+4})
-//       (title="2012-#{6+4}") // not valid for Snipcaller att, because Insert is node allowed
+//       (title="2012-#{6+4}") // not valid for Snipcaller att, because Insert is not allowed
 //          name: Text(content="title")
 //          value: InterpolatedString( childs =array( Text("2012-"), Insert("6+4") ))
 //      {title}  // not valid for Snipcaller att, because Insert is node allowed
@@ -90,6 +92,15 @@ class ApplySnip extends VisitorAbstract
 //       {"title"}
 //          name: null
 //          value: InterpolatedString ( childs=array( Text("title") )
+//      {:title =>"ok"}
+//          name: Text
+//          value: InterpolatedString ( childs=array( Text("ok") )
+//      {:title =>ok} // not valid for Snipcaller att, because Insert is node allowed
+//          name: Text
+//          value: Insert(content="ok")
+//      {"title" => "ok"}
+//          name: InterpolatedString
+//          value: InterpolatedString ( childs=array( Text("ok") )
 //       {"title"=>"2012-#{6+4}"} // not valid for Snipcaller att, because Insert is node allowed
 //          name: InterpolatedString ( childs=array( Text("title") )
 //          value: InterpolateString( childs =array( Text("2012-"), Insert("6+4") ))

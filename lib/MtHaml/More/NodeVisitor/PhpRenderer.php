@@ -14,127 +14,78 @@ use MtHaml\Node\Tag;
 class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInterface
 {
 
-/*
-    %input(selected)
-        rendered by MtHaml:
-             <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', TRUE)), 'html5', 'UTF-8'); ?>
-    %input(selected=true)
-        rendered by MtHaml:
-             <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', true)), 'html5', 'UTF-8'); ?>
-    %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
-        rendered by MtHaml:
-            <?php echo MtHaml\Runtime::renderAttributes(array(array('title', 'title'), array('href', href)), 'html5', 'UTF-8'); ?>
-        attributes_dyn: type is not dyn; but src is
-    %a(title="title" href=href) Stuff
-        rendered by MtHaml:
-            <?php echo MtHaml\Runtime::renderAttributes(array(array('type', 'text/javascript'), array('src', ('javascripts/script_' . (2 + 7)))), 'html5', 'UTF-8'); ?>
-        attributes_dyn: title is not dyn, but href is
-    %span.ok(class="widget_#{widget.number}")
-        rendered by MtHaml:
-            <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'ok'), array('class', ('widget_' . (widget.number)))), 'html5', 'UTF-8'); ?>
+    /*
+        %input(selected)
+            rendered by MtHaml:
+                 <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', TRUE)), 'html5', 'UTF-8'); ?>
 
-TODO:
-    %div.add{:class => [@item.type, @item == @sortcol && [:sort, @sortdir]] } Contents
-        rendered by MtHaml:
-             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'add'), array('class', ([@item.type, @item == @sortcol && [:sort, @sortdir]]))), 'html5', 'UTF-8'); ?>
-*/
+    TODO:
+        %input(selected=true)
+            rendered by MtHaml:
+                 <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', true)), 'html5', 'UTF-8'); ?>
+        %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
+            rendered by MtHaml:
+                <?php echo MtHaml\Runtime::renderAttributes(array(array('title', 'title'), array('href', href)), 'html5', 'UTF-8'); ?>
+            attributes_dyn: type is not dyn; but src is
+        %a(title="title" href=href) Stuff
+            rendered by MtHaml:
+                <?php echo MtHaml\Runtime::renderAttributes(array(array('type', 'text/javascript'), array('src', ('javascripts/script_' . (2 + 7)))), 'html5', 'UTF-8'); ?>
+            attributes_dyn: title is not dyn, but href is
+        %span.ok(class="widget_#{widget.number}")
+            rendered by MtHaml:
+                <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'ok'), array('class', ('widget_' . (widget.number)))), 'html5', 'UTF-8'); ?>
+
+        %div.add{:class => [@item.type, @item == @sortcol && [:sort, @sortdir]] } Contents
+            rendered by MtHaml:
+                 <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'add'), array('class', ([@item.type, @item == @sortcol && [:sort, @sortdir]]))), 'html5', 'UTF-8'); ?>
+    */
     protected function renderDynamicAttributes(Tag $tag)
     {
         $oldOutput = $this->output;
         $oldLineNo = $this->lineno;
         parent::renderDynamicAttributes($tag);
-        $newOutput = substr($this->output, strlen($oldOutput));
-        // <attrs> like: 'title',(title)),array('href',href),array('id',id
-        $re = '@^ <\?php echo MtHaml\\\\Runtime::renderAttributes\(array\(array\((?<attrs>.+)\)\), \'(?<format>\w+)\', \'(?<charset>[-\w]+)\'\); \?>$@';
-        if (preg_match($re, $newOutput, $matches)) {
-            $str_attrs = $matches['attrs'];
-            $format=$matches['format'];
-            $charset = $matches['charset'];
-            if (strpos($str_attrs, 'AttributeInterpolation') === false && strpos($str_attrs, 'AttributeList') === false) {
-                $str_attrs = explode('), array(', $str_attrs);
-                $attributes = array();
-                $attributes_dyn = array();
-                foreach ($str_attrs as $str_attr) {
-                    list ($name, $value) = explode(', ', $str_attr);
-                    $name=trim($name,"'");
-
-                    if ((substr($value,0,1))=="'"){
-                        if( !isset($attributes_dyn[$name]) || $attributes_dyn[$name]==false){
-                            $attributes_dyn[$name]=false;
-                        }
+        $newOutput = substr($this->output, strlen($oldOutput) + 1); // why '+1'? the first char is a space
+        $parser = $this->env->php_parser;
+        try {
+            $stmts = $parser->parse($newOutput);
+            if (is_array($stmts) && (($echo = $stmts[0]) instanceof \PHPParser_Node_Stmt_Echo)) {
+                if (($staticCall = $echo->exprs[0]) && ($staticCall->name == 'renderAttributes')) {
+                    $args = $staticCall->args;
+                    $o_attris = $args[0]->value->items;
+                    $attributes = array();
+                    foreach ($o_attris as $attri) {
+                        $attributes[$attri->value->items[0]->value->value] = $attri->value->items[1]->value->name->parts[0];
                     }
-                    else{
-                        $attributes_dyn[$name]=true;
-                    }
-
-                    if ('data' === $name) {
-                    } else if ('id' === $name) {
-                    } else if ('class' === $name) {
-                        if (isset($attributes['class'])) {
-                            $attributes['class'][]=  $value;
-                        } else {
-                            $attributes['class'] = array($value);
-                        }
-                    } else if ('TRUE' === strtoupper($value)) {
-                        if ('html5' === $format) {
-                            $attributes[$name] = true;
-                        } else {
-                            $attributes[$name] = $name;
-                        }
-                    } else if (false === $value || null === $value) {
-                        // do not output
-                    } else {
-                        if (isset($attributes[$name])) {
-                            // so that next assignment puts the attribute
-                            // at the end for the array
-                            unset($attributes[$name]);
-                        }
-                        $attributes[$name] = $value;
-                    }
+                    $format = $args[1]->value->value;
+                    $charset = $args[2]->value->value;
                 }
 
-                if(isset($attributes_dyn['class'])){
-                    if($attributes_dyn['class']==true){
-                        /*
-                          %span.ok(class="widget_#{widget.number}")
-                            ->
-                          implode(' ',array('ok',('widget_' . (widget.number)))
-                        */
-                        $attributes['class']='implode(\' \',array('.implode(',',$attributes['class']).')';
-                    }else{
-                        $attributes['class']=implode(' ',$attributes['class']);
-                    }
-                }
 
                 $result = null;
                 foreach ($attributes as $name => $value) {
-
-                    if($attributes_dyn[$name]==false) $value=trim($value,"'");
-
                     if (null !== $result) {
                         $result .= ' ';
                     }
                     if ($value instanceof AttributeInterpolation) {
                         $result .= $value->value;
-                    } else if (true === $value) {
+                    } else if ('true' === strtolower($value) ) {
                         $result .=
                             htmlspecialchars($name, ENT_QUOTES, $charset);
                     } else {
                         $result .=
                             htmlspecialchars($name, ENT_QUOTES, $charset)
-                            .(
-                                $attributes_dyn[$name]?
-                                    "=\"<?php echo htmlspecialchars($value, ENT_QUOTES, $charset); ?>\"" :
-                                    '="'.htmlspecialchars($value, ENT_QUOTES, $charset).'"'
-                            );
+                            . '="'
+                            . htmlspecialchars($value, ENT_QUOTES, $charset)
+                            . '"';
                     }
                 }
-                $this->output = $oldOutput .' '. $result;
+                $this->output = $oldOutput . ' ' . $result;
                 $this->lineno = $oldLineNo + substr_count($result, "\n");
-
             }
-
+        } catch (PHPParser_Error $e) {
+            echo 'Parse Error: ', $e->getMessage();
         }
+
 
     }
 

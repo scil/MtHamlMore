@@ -18,13 +18,7 @@ use MtHaml\More\Log\LogInterface;
 class Environment extends \MtHaml\Environment
 {
 
-    public $currentMoreEnv;
-    public $php_parser;
-    public function __construct($target, array $options = array(), $filters = array())
-    {
-        parent::__construct($target,$options,$filters);
-        $this->php_parser= new \PHPParser_Parser(new \PHPParser_Lexer);
-    }
+    public  $currentMoreEnv;
 
     public function compileString($string, $moreOption,$returnRoot=false)
     {

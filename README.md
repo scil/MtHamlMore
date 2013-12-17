@@ -88,9 +88,14 @@ Works well for these haml:
 ```
 
 Not works
+
 1. nested array for data attribute value, i've tried token or re to parse nested array string and finally give up. ```  %a{:data => ['author_id' => $data_id,'abc'=>array('ok'=>3,'no'=>$data_id+1)]} ```
+
 2. 'AttributeInterpolation' or 'AttributeList' is produced by MtHaml.
+
 3. (welcome add your find)
+
+
 
 node: MtHaml\More\NodeVisitor\PhpRenderer::renderDynamicAttributes
 

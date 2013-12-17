@@ -16,24 +16,33 @@ use MtHaml\More\Node\SecondRoot;
 class Parser extends \MtHaml\Parser
 {
 
-    protected $unnamedPlaceholderIndex=0;
+    protected $unnamedPlaceholderIndex = 0;
     // add Envirmonent object, see README.md : Development Rool 2
     public $env;
+    public $currentMoreEnv;
 
 
-    public function __construct(\MtHaml\Environment $env=null)
+    public function __construct(\MtHaml\Environment $env = null)
     {
-        $snipcaller=$env->currentMoreEnv['snipcallerNode'];
-        if(empty($snipcaller))
+        if (empty($env->currentMoreEnv))
             parent::__construct();
-        else
-            $this->parent = new SecondRoot($snipcaller);
+        else {
+            $this->currentMoreEnv=$env->currentMoreEnv;
+            $snipcaller = $this->currentMoreEnv['snipcallerNode'];
+            if (empty($snipcaller))
+                parent::__construct();
+            else
+                $this->parent = new SecondRoot($snipcaller);
 
-        $this->env=$env;
+        }
+        $this->env = $env;
     }
 
     protected function parseStatement($buf)
     {
+        if (empty($this->currentMoreEnv)){
+            return parent::parseStatement($buf);
+        }
         if (null !== $node = $this->parseSnipCaller($buf)) {
 
             return $node;
@@ -58,8 +67,8 @@ class Parser extends \MtHaml\Parser
 
     protected function parsePlaceholderDefaultValueCaller($buf)
     {
-        $regex='/^@@default$/';
-        if($buf->match($regex,$match)) {
+        $regex = '/^@@default$/';
+        if ($buf->match($regex, $match)) {
             $node = new PlaceholderDefaultCaller($match['pos'][0]);
             return $node;
         }
@@ -115,7 +124,7 @@ class Parser extends \MtHaml\Parser
 
     protected function parseHtmlTag($buf)
     {
-        $regex='@
+        $regex = '@
         ^<!--\[if[\w\s]+\]>$| # ie condition comment like <!--[if lt IE9]>
         ^<\w+[^>/]+>$ # start tag which maybe has childs; there are exceptions like <hr> <meta ..>
                    # not included:
@@ -125,11 +134,12 @@ class Parser extends \MtHaml\Parser
                    # single line tag like <h1>title</h1>
                         # they have no childs, ther are parsed as Statement like official MtHaml
         @xA';
-        if ($buf->match($regex,$match)) {
-            $node= new HtmlTag($match['pos'][0],$match[0]);
+        if ($buf->match($regex, $match)) {
+            $node = new HtmlTag($match['pos'][0], $match[0]);
             return $node;
         }
     }
+
     protected function parseSnipCaller($buf)
     {
         $regex = '/
@@ -141,7 +151,7 @@ class Parser extends \MtHaml\Parser
 
             $attributes = $this->parseSnipCallerAttributes($buf);
 
-            $node = new SnipCaller($match['pos'][0], $snip_name,$this->env->currentMoreEnv, $attributes);
+            $node = new SnipCaller($match['pos'][0], $snip_name, $this->env->currentMoreEnv, $attributes);
 
             $buf->skipWs();
 
@@ -153,7 +163,9 @@ class Parser extends \MtHaml\Parser
             return $node;
         }
     }
-    protected function parseSnipCallerAttributes($buf){
+
+    protected function parseSnipCallerAttributes($buf)
+    {
         return $this->parseTagAttributes($buf);
     }
 

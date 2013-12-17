@@ -1,0 +1,27 @@
+--FILE--
+<?php
+
+$href='www.g.cn';
+
+$compiled =  compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+    'reduce_runtime' => true,
+));
+$compiled_file=$file.'..php';
+file_put_contents($compiled_file,$compiled);
+include $compiled_file;
+--HAML--
+%a{:title=>"title",:href=>$href,:id=>strlen($href)} Stuff
+%script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
+--not allowed--
+%a{title:"title",href:$href,id:strlen($href)} Stuff
+--EXPECT--
+<a title="title" href="www.g.cn" id="8">Stuff</a>
+<script type="text/javascript" src="javascripts/script_9"></script>
+
+--EXPECT_PHP--
+<a title="title"<?php $__mthamlmore_attri_value= htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
+if(!is_null($__mthamlmore_attri_value)) echo ' href="'.$__mthamlmore_attri_value.'"' ;$__mthamlmore_attri_value= htmlspecialchars(implode('-',array_filter(array((strlen($href))),function($v){return is_null($v)?false:true;})), ENT_QUOTES, 'UTF-8');
+if($__mthamlmore_attri_value!=="") echo ' id="'.$__mthamlmore_attri_value.'"' ; ?>>Stuff</a>
+<script type="text/javascript"<?php $__mthamlmore_attri_value= htmlspecialchars(('javascripts/script_' . (2 + 7)), ENT_QUOTES, 'UTF-8');
+if(!is_null($__mthamlmore_attri_value)) echo ' src="'.$__mthamlmore_attri_value.'"' ; ?>></script>
+

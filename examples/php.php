@@ -11,13 +11,15 @@ echo <<<S
 <h4>snip call process logs outputed by option 'debug'=>true  :</h4>\n<p style='height:200px;overflow:scroll;margin:30px;'>
 S;
 
-$compiled = compilePhpMoreHaml( file_get_contents($hamlfile),array(),
+$compiled = compilePhpMoreHaml( file_get_contents($hamlfile),
+    array(
+        'enable_escaper' => false,
+    ),
     array(
         'uses'=>array(__DIR__.'/snips/php.php'),
         'filename'=>$hamlfile,
         'prepare'=>true,
         'debug'=>true,
-        'enable_escaper' => false,
 ));
 
 echo "</p>\n<h2>rendered html :</h2>\n";

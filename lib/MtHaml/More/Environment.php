@@ -19,12 +19,21 @@ class Environment extends \MtHaml\Environment
 {
 
     public  $currentMoreEnv;
+    public $noReduceRuntime=true;
 
-    public function compileString($string, $moreOption,$returnRoot=false)
+    public function compileString($string, $moreOption=array(),$returnRoot=false)
     {
+        if(!empty($moreOption['reduce_runtime'])) $this->noReduceRuntime=false;
+
+        if(empty( $moreOption['filename'])){
+            return  parent::compileString($string, '[unnamed]');
+        }
+
         $prepareWork = false;
+
         if(is_string($moreOption)) $moreOption=array('filename'=>$moreOption);
         $this->currentMoreEnv=new MoreEnv($moreOption,$this);
+
         $filename= $moreOption['filename'];
         if ($this->currentMoreEnv['prepare']) {
             list($string, $filename, $prepareWork) = $this->prepare($string, $filename);
@@ -263,13 +272,14 @@ class Environment extends \MtHaml\Environment
     {
         $visitors = array();
 
-        // visitor order is important
-        $visitors[] = $this->getMakesurePlaceholderValueVisitor();
-        // if is useless and harmful, because ApplyPlaceholderValueVisitor also apply placehodler default value
-        //  if($this->hasPlaceholdervalues())
-        $visitors[] = $this->getApplyPlaceholderValueVisitor($this->currentMoreEnv->getPlaceholdervalues());
-        $visitors[] = $this->getApplySnipVisitor($this->currentMoreEnv['baseIndent']);
-
+        if($more_env=$this->currentMoreEnv){
+            // visitor order is important
+            $visitors[] = $this->getMakesurePlaceholderValueVisitor();
+            // if is useless and harmful, because ApplyPlaceholderValueVisitor also apply placehodler default value
+            //  if($this->hasPlaceholdervalues())
+            $visitors[] = $this->getApplyPlaceholderValueVisitor($this->currentMoreEnv->getPlaceholdervalues());
+            $visitors[] = $this->getApplySnipVisitor($this->currentMoreEnv['baseIndent']);
+        }
         $visitors[] = $this->getAutoclosevisitor();
         $visitors[] = $this->getAutoclosevisitor();
         $visitors[] = $this->getMidblockVisitor();

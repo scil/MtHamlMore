@@ -1,6 +1,6 @@
 --FILE--
 <?php
-echo compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+echo MtHaml\More\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
     'uses'=>array("$file.snip"),
     'filename'=>"$file.haml",
     'prepare'=>true,

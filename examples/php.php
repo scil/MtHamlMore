@@ -1,7 +1,7 @@
 <?php
 
 
-require_once __DIR__ . '/../lib/MtHaml/More/entry.php';
+require __DIR__."/../vendor/autoload.php";
 
 $hamlfile=__DIR__ . '/php.haml';
 
@@ -11,7 +11,7 @@ echo <<<S
 <h4>snip call process logs outputed by option 'debug'=>true  :</h4>\n<p style='height:200px;overflow:scroll;margin:30px;'>
 S;
 
-$compiled = compilePhpMoreHaml( file_get_contents($hamlfile),
+$compiled = MtHaml\More\Entry::compilePhpMoreHaml( file_get_contents($hamlfile),
     array(
         'enable_escaper' => false,
     ),

@@ -3,7 +3,7 @@
 
 $data_id=3;
 
-$compiled =  compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+$compiled =  MtHaml\More\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
     'reduce_runtime' => true,
 ));
 $compiled_file=$file.'..php';

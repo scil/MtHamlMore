@@ -21,7 +21,7 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
 
         $hamlfile=self::$exampleDir . '/php.haml';
 
-        $compiled = compilePhpMoreHaml( file_get_contents($hamlfile),
+        $compiled = \MtHaml\More\Entry::compilePhpMoreHaml( file_get_contents($hamlfile),
             array(
                 'enable_escaper' => false,
             ),

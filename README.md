@@ -119,7 +119,7 @@ Not works
 
 
 
-node: MtHaml\More\NodeVisitor\PhpRenderer::renderDynamicAttributes
+code: MtHaml\More\NodeVisitor\PhpRenderer::renderDynamicAttributes
 
 
 extra feature 3 : prepare

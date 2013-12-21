@@ -40,11 +40,23 @@ output html will is
 second example
 ```
 @grid(grid="4 -4 4" fluid="1")
+  _ %h1 4
+  _ 4 offset 4
 ```
 This is calling a snip named grid, and two arguments. Usually, i use snip @grid to define grid layout.
 'fluid="1"' is fluid layout, 'grid="4 -4 4" is one type of 12 columns grid.
 What this statement output depends on how your snip writes.
-In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2 grid.
+In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2 grid. In case of this,output would be
+```
+<div class="row-fluid show-grid">
+    <div class="span4">
+      <h1>4</h1>
+    </div>
+    <div class="span4 offset4">
+      4 offset 4
+    </div>
+</div>
+```
 
 see more examples at : "docs/0. Snip Examples.md"
 

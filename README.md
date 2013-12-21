@@ -34,9 +34,19 @@ output html will is
 </div>
 ```
 
-'@@@' is placeholder where you can put your own content,and it could also has default values.
+'@@@' is placeholder where you can put your own content,and you could define default values for it.
 
- see more examples at : "docs/0. Snip Examples.md"
+
+second example
+```
+@grid(grid="4 -4 4" fluid="1")
+```
+This is calling a snip named grid, and two arguments. Usually, i use snip @grid to define grid layout.
+'fluid="1"' is fluid layout, 'grid="4 -4 4" is one type of 12 columns grid.
+What this statement output depends on how your snip writes.
+In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2 grid.
+
+see more examples at : "docs/0. Snip Examples.md"
 
 extra feature 1 : HtmlTag
 -----

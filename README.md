@@ -75,7 +75,7 @@ which is supported by MtHaml, but also
 ```
 This feature enables you to copy any html code into a haml file, only make sure code apply haml indent syntax.
 
-code: '<div>' is parse as HtmlTag, see MtHaml\More\Parser::parseHtmlTag
+code: MtHaml\More\Parser::parseHtmlTag
 
 
 

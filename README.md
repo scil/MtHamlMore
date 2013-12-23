@@ -103,19 +103,16 @@ Works well for these haml:
 %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
 %span.ok(class="widget_#{$widget['number']}")
 .item{:class => $item['is_empty'] ? "empty":null}
-%div.add{:class => [$item['type'], $item == $sortcol ? array('sort', $sortdir):null] } Contents
-%div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']] }
-#div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']>3?'big' :'small'] }
-%a{:href=>"/posts", :data => ['author_id' => 'data_id','abc'=>3,'no'=>strlen('abc')]} Posts By Author
+%div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
+#div{:class => array($item['type'], $item['urgency']), :id => array($item['type'], $item['number']>3?'big' :'small') }
+%a{:data => array('author_id' => $data_id,'abc'=>array('ok'=>3,'no'=>$data_id+1))}
 ```
 
 Not works
 
-1. nested array for data attribute value, i've tried token or re to parse nested array string and finally give up. ```  %a{:data => ['author_id' => $data_id,'abc'=>array('ok'=>3,'no'=>$data_id+1)]} ```
+1. there is 'AttributeInterpolation' or 'AttributeList' in php files produced by MtHaml. I have not encounter this so far.
 
-2. 'AttributeInterpolation' or 'AttributeList' is produced by MtHaml.
-
-3. (welcome add your find)
+2. (welcome add your find)
 
 
 

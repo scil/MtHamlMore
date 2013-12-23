@@ -9,12 +9,14 @@ class Entry
     * @param : $moreOptions [Array] options for MtHamlMore . options:
     *    'filename': path str of haml file . important options. Without this, haml str would be parsed like MtHaml ,instend of MtHamlMore
     *    'uses': php files which define snips. you can use * like "snips/*.snip.php"
+    *    'reduce_runtime': if enable reduce_runtime feature . default value : false
     *    'prepare' : if enable preppare feature . default value : false
     *    'debug' : if debug is true, the process of snip invoking will be output . default value : false
     *    example :
     *        array(
     *            'filename'=>__DIR__.'/php.haml',
     *            'uses'=>array(__DIR__.'/snips/php.php'),
+    *            'reduce_runtime'=>true,
     *            'prepare'=>true,
     *            'debug'=>true,
     *        )

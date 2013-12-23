@@ -9,54 +9,56 @@ use MtHaml\More\Node\SnipCaller;
 use MtHaml\More\Node\PlaceholderValue;
 use MtHaml\More\Node\Placeholder;
 use MtHaml\Node\Tag;
+use MtHaml\Runtime\AttributeInterpolation;
 
 
 class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInterface
 {
+    static private $php_parser;
 
-/*
-%input(selected)
-    rendered by MtHaml:
-         <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', TRUE)), 'html5', 'UTF-8'); ?>
-%input(selected=true)
-    rendered by MtHaml:
-         <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', true)), 'html5', 'UTF-8'); ?>
-%script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
-    rendered by MtHaml:
-        <?php echo MtHaml\Runtime::renderAttributes(array(array('title', 'title'), array('href', href)), 'html5', 'UTF-8'); ?>
-    attributes_dyn: type is not dyn; but src is
-%a(title="title" href=href) Stuff
-    rendered by MtHaml:
-        <?php echo MtHaml\Runtime::renderAttributes(array(array('type', 'text/javascript'), array('src', ('javascripts/script_' . (2 + 7)))), 'html5', 'UTF-8'); ?>
-    attributes_dyn: title is not dyn, but href is
-%span.ok(class="widget_#{widget.number}")
-    rendered by MtHaml:
-        <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'ok'), array('class', ('widget_' . (widget.number)))), 'html5', 'UTF-8'); ?>
-%div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']] }
-    rendered by MtHaml:
-         <?php echo MtHaml\Runtime::renderAttributes(array(array('class', ([$item['type'], $item['urgency']])), array('id', ([$item['type'], $item['number']]))), 'html5', 'UTF-8'); ?>
+    /*
+    %input(selected)
+        rendered by MtHaml:
+             <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', TRUE)), 'html5', 'UTF-8'); ?>
+    %input(selected=true)
+        rendered by MtHaml:
+             <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', true)), 'html5', 'UTF-8'); ?>
+    %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
+        rendered by MtHaml:
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('title', 'title'), array('href', href)), 'html5', 'UTF-8'); ?>
+        attributes_dyn: type is not dyn; but src is
+    %a(title="title" href=href) Stuff
+        rendered by MtHaml:
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('type', 'text/javascript'), array('src', ('javascripts/script_' . (2 + 7)))), 'html5', 'UTF-8'); ?>
+        attributes_dyn: title is not dyn, but href is
+    %span.ok(class="widget_#{widget.number}")
+        rendered by MtHaml:
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'ok'), array('class', ('widget_' . (widget.number)))), 'html5', 'UTF-8'); ?>
+    %div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']] }
+        rendered by MtHaml:
+             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', ([$item['type'], $item['urgency']])), array('id', ([$item['type'], $item['number']]))), 'html5', 'UTF-8'); ?>
 
-.item{:class => $item['is_empty'] ? "empty":null}
-    rendered by MtHaml:
-        <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'item'), array('class', ($item['is_empty'] ? "empty":null))), 'html5', 'UTF-8'); ?>
-    %div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
-  writed as->
-    %div.add{:class => [$item['type'], $item == $sortcol ? array('sort', $sortdir):null] } Contents
-    rendered by MtHaml:
-        <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'add'), array('class', ([$item['type'], $item == $sortcol ? array('sort', $sortdir):null]))), 'html5', 'UTF-8'); ?>
-%a{:href=>"/posts", :data => ['author_id' => 123]} Posts By Author
-    rendered by MtHaml:
-        <a <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => 123]))), 'html5', 'UTF-8'); ?>>Posts By Author</a>
-'author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1
-    rendered by MtHaml:
-         <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1]))), 'html5', 'UTF-8'); ?>
-%a{:href=>"/posts", :data => ['author_id' => array('ok'=>3,'no'=>4)]} Posts By Author
-    rendered by MtHaml:
-        <a <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => array('ok'=>3,'no'=>4)]))), 'html5', 'UTF-8'); ?>>Posts By Author</a>
-.*/
+    .item{:class => $item['is_empty'] ? "empty":null}
+        rendered by MtHaml:
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'item'), array('class', ($item['is_empty'] ? "empty":null))), 'html5', 'UTF-8'); ?>
+        %div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
+      writed as->
+        %div.add{:class => [$item['type'], $item == $sortcol ? array('sort', $sortdir):null] } Contents
+        rendered by MtHaml:
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'add'), array('class', ([$item['type'], $item == $sortcol ? array('sort', $sortdir):null]))), 'html5', 'UTF-8'); ?>
+    %a{:href=>"/posts", :data => ['author_id' => 123]} Posts By Author
+        rendered by MtHaml:
+            <a <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => 123]))), 'html5', 'UTF-8'); ?>>Posts By Author</a>
+    'author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1
+        rendered by MtHaml:
+             <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1]))), 'html5', 'UTF-8'); ?>
+    %a{:href=>"/posts", :data => ['author_id' => array('ok'=>3,'no'=>4)]} Posts By Author
+        rendered by MtHaml:
+            <a <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => array('ok'=>3,'no'=>4)]))), 'html5', 'UTF-8'); ?>>Posts By Author</a>
+    .*/
     protected function renderDynamicAttributes(Tag $tag)
     {
-        if($this->env->noReduceRuntime){
+        if ($this->env->noReduceRuntime) {
             parent::renderDynamicAttributes($tag);
             return;
         }
@@ -65,180 +67,227 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
         parent::renderDynamicAttributes($tag);
         $newOutput = substr($this->output, strlen($oldOutput));
         // <attrs> like: 'title',(title)),array('href',href),array('id',id
-        $re = '@^ <\?php echo MtHaml\\\\Runtime::renderAttributes\(array\(array\((?<attrs>.+)\)\), \'(?<format>\w+)\', \'(?<charset>[-\w]+)\'\); \?>$@';
+        $re = '@^ <\?php echo MtHaml\\\\Runtime::renderAttributes\((?<attrs>array\(array\(.+\)\)), \'(?<format>\w+)\', \'(?<charset>[-\w]+)\'\); \?>$@';
         if (preg_match($re, $newOutput, $matches)) {
             $str_attrs = $matches['attrs'];
-            $format=$matches['format'];
+            $format = $matches['format'];
             $charset = $matches['charset'];
-            if (strpos($str_attrs, 'AttributeInterpolation') !==false || strpos($str_attrs, 'AttributeList') !==false ) {
+            if (strpos($str_attrs, 'AttributeInterpolation') !== false || strpos($str_attrs, 'AttributeList') !== false) {
                 //todo
-                throw new MoreException('reduce_runtime: AttributeInterpolation or AttributeList');
-                return;
-            }else{
-                $str_attrs = explode('), array(', $str_attrs);
-                $attributes = array();
-                $attributes_dyn = array();
-                $attributes_nest_array = array();
-                foreach ($str_attrs as $str_attr) {
-                    // 3td arg '2' is necessary when for joined values like "%div{:class => [$item['type'], $item['urgency']]}"
-                    list ($name, $value) = explode(', ', $str_attr,2);
-                    $name=trim($name,"'");
-
-                    $attributes_nest_array[$name]=false;
-                    if ((substr($value,0,1))=="'"){
-                        if( !isset($attributes_dyn[$name]) || $attributes_dyn[$name]==false){
-                            $attributes_dyn[$name]=false;
-                        }
-                    }
-                    else{
-                        $attributes_dyn[$name]=true;
-                        if(strpos($value,'array(')!==false){
-                            $attributes_nest_array[$name]=true;
-                        }
-                    }
-
-                    if ('data' === $name) {
-                        // change "(['id'=>2])" to "array('id'=>2) "
-                        if(substr($value,0,2)=='(['){
-                            $value_inner= substr($value,2,strlen($value)-4) ;
-                        }else {
-                            $value_inner= substr($value,0,strlen($value)-9) ;
-                        }
-                        $value = 'array('. $value_inner.')';
-
-                        // no nest array
-                        if (strpos($value_inner,'array(')===false && strpos($value_inner,'[')===false){
-                            // 'ok'=>3,'no'=>4
-                            if(preg_match_all("/,\\s*'([^']+)'\\s*=>\\s*(.+?)(?=,\\s*'|\\s*$)/" , ','.$value_inner,$matches)){
-                                foreach($matches[1] as $index=>$key){
-                                    $attributes['data-'.$key]=$matches[2][$index];
-                                    // for simple , every data is dyn
-                                    $attributes_dyn['data-'.$key]=true;
-                                }
-                            }
-                        }
-                        else{
-
-                            set_error_handler(function(){throw new \Exception('eval data value wrong');});
-                            try{
-                                eval("\$dataValue=$value;");
-                                self::returnDataAttributes($attributes, $dataValue);
-                            }
-                            catch(\Exception $e){
-                                restore_error_handler();
-                                //todo
-                                throw new MoreException('reduce_runtime: nested data only accept non-dyn value');
-                                return;
-
-                            }
-                            restore_error_handler();
-
-                        }
-
-                    } else if ('class' === $name || 'id' === $name) {
-                        // for joined values
-                        if(substr($value,0,2)=='([' && substr($value,-2)=='])'){
-                            // ([$item['type'],3])
-                            $value =  substr($value,2,strlen($value)-4);
-                        }else if (substr($value,0,7)=='(array(' && substr($value,-2)=='))'){
-                            // (array($item['type'],3))
-                           $value=substr($value,7,strlen($value)-9);
-                        }
-                        if (isset($attributes[$name])) {
-                                $attributes[$name][]=  $value;
-                        } else {
-                            $attributes[$name] = array($value);
-                        }
-                    } else if ('TRUE' === strtoupper($value)) {
-                        if ('html5' === $format) {
-                            $attributes[$name] = true;
-                        } else {
-                            $attributes[$name] = $name;
-                        }
-                    //todo: null?
-                    } else if ('false' === strtolower($value) || null === $value) {
-                        // do not output
-                    } else {
-                        if (isset($attributes[$name])) {
-                            // so that next assignment puts the attribute
-                            // at the end for the array
-                            unset($attributes[$name]);
-                        }
-                        $attributes[$name] = $value;
-                    }
-                }
-
-                if(isset($attributes['class'])){
-                    $attributes['class'] = self::returnJoinedValue($attributes['class'],' ',$attributes_dyn['class'],$attributes_nest_array['class']);
-                }
-                if(isset($attributes['id'])){
-                    $attributes['id'] = self::returnJoinedValue($attributes['id'],'-',$attributes_dyn['id'], $attributes_nest_array['id']);
-                }
-
-                $result = null;
-                $result_dyn=array();
-                foreach ($attributes as $name => $value) {
-
-                    if (null !== $result) {
-                        $result .= ' ';
-                    }
-                    if ($value instanceof AttributeInterpolation) {
-                        //todo
-                        throw new MoreException('reduce_runtime: AttributeInterpolation ');
-                        $result .= $value->value;
-                    } else if (true === $value) {
-                        $result .=
-                            htmlspecialchars($name, ENT_QUOTES, $charset);
-                    } else {
-                        self::renderOneAttribute($attributes_dyn,$name,$value,$charset,$result,$result_dyn);
-                    }
-                }
-                $result= ($result?' '.trim($result):'') .
-                    ($result_dyn? '<?php '. implode('',$result_dyn).' ?>' :'' );
-                $this->output = $oldOutput . $result;
-                $this->lineno = $oldLineNo + substr_count($result, "\n");
-
+                throw new ReduceRuntimeException(' AttributeInterpolation or AttributeList');
             }
 
-        }
+            $str_attrs_code = "<?php $str_attrs;";
+            $stmts = self::getPHPParser()->parse($str_attrs_code);
+            $codeFetcher = new NodeCodeFetcher($str_attrs_code);
+            $attributes = array();
+            $attributes_dyn = array();
+            $nestedArray_in_classOrIdValue = array('id' => false, 'class' => false);
 
-    }
-    static protected function renderOneAttribute($attributes_dyn,$name,$value,$charset,&$result,&$result_dyn)
-    {
-        // empty:  false or unset(like ['data-author_id'=>3] )
-        if(empty($attributes_dyn[$name])){
-            $result .=
-                htmlspecialchars($name, ENT_QUOTES, $charset).
-                '="'.htmlspecialchars(trim($value,"'"), ENT_QUOTES, $charset).'"';
+            foreach ($stmts[0]->items as $item) {
+                $name = $item->value->items[0]->value;
+                if ($name instanceof \PHPParser_Node_Scalar_String) {
+                    $name = $name->value;
+                } else {
+                    throw new ReduceRuntimeException('att name should be string');
+                }
+
+                $value_node = $item->value->items[1]->value;
+                $value_str = $codeFetcher->getNodeCode($value_node);
+
+                if ('data' === $name) {
+                    $value_str = '<?php ' . $value_str . ';';
+
+                    $data_stmts = self::getPHPParser()->parse($value_str);
+                    $data_codeFetcher = new NodeCodeFetcher($value_str);
+                    self::returnDataAttributesByPHPParser($data_stmts[0], $data_codeFetcher, $attributes, $attributes_dyn);
+
+
+                } else if ('class' === $name || 'id' === $name) {
+                    self::pickEveryValueForClassId($value_node,$codeFetcher,$attributes,$nestedArray_in_classOrIdValue,$name);
+                    if (!isset($attributes_dyn[$name]) || $attributes_dyn[$name] === false) {
+                        $attributes_dyn[$name] = self::ifDynPHPNode($value_node);
+                    }
+
+
+                } else if ('TRUE' === strtoupper($value_str)) {
+                    if ('html5' === $format) {
+                        $attributes[$name] = true;
+                    } else {
+                        $attributes[$name] = $name;
+                    }
+                    $attributes_dyn[$name] = false;
+                    //todo: null?
+                } else if ('false' === strtolower($value_str) || 'null' === strtolower($value_str)) {
+                    // do not output
+                } else {
+                    if (isset($attributes[$name])) {
+                        // so that next assignment puts the attribute
+                        // at the end for the array
+                        unset($attributes[$name]);
+                    }
+                    $attributes[$name] = $value_str;
+                    if (self::ifDynPHPNode($value_node)) {
+                        $attributes_dyn[$name] = true;
+                    } else {
+                        $attributes_dyn[$name] = false;
+                    }
+                }
+            }
+
+            $multiple=array();
+            foreach(array('class'=>' ','id'=>'-') as $item=>$sep){
+                if (isset($attributes[$item])) {
+                    if(count($attributes[$item])==1){
+                        $multiple[$item]=false;
+                    }else
+                        $multiple[$item]=true;
+
+                    $attributes[$item] = self::returnJoinedValueForClassId($attributes[$item], $sep, $attributes_dyn[$item], $nestedArray_in_classOrIdValue[$item],$multiple[$item]);
+                }
+            }
+
+            $result = null;
+            $result_dyn = array();
+            foreach ($attributes as $name => $value) {
+                if (null !== $result) {
+                    $result .= ' ';
+                }
+                if ($value instanceof AttributeInterpolation) {
+                    //todo
+                    throw new ReduceRuntimeException('AttributeInterpolation ');
+                    $result .= $value->value;
+                } else if (true === $value) {
+                    $result .=
+                        htmlspecialchars($name, ENT_QUOTES, $charset);
+                } else {
+                    self::renderOneAttribute($attributes_dyn, $name, $value, $charset, $result, $result_dyn,$multiple);
+                }
+            }
+            $result = ($result ? ' ' . trim($result) : '') .
+                ($result_dyn ? '<?php ' . implode('', $result_dyn) . ' ?>' : '');
+            $this->output = $oldOutput . $result;
+            $this->lineno = $oldLineNo + substr_count($result, "\n");
+
         }
-        else{
-            if($name=='class' || $name=='id'){
-                $check='if($__mthamlmore_attri_value!=="")';
-            }else{
-                $check='if(!is_null($__mthamlmore_attri_value))';
+    }
+
+    static protected function renderOneAttribute($attributes_dyn, $name, $value, $charset, &$result, &$result_dyn,$multiple)
+    {
+        if ($attributes_dyn[$name] === false) {
+            $result .=
+                htmlspecialchars($name, ENT_QUOTES, $charset) .
+                '="' . htmlspecialchars(trim($value, "'"), ENT_QUOTES, $charset) . '"';
+        } else {
+            if (($name == 'class' || $name == 'id') && $multiple[$name]) {
+                $check = 'if($__mthamlmore_attri_value!=="")';
+            } else {
+                $check = 'if(!is_null($__mthamlmore_attri_value))';
             }
             $name = htmlspecialchars($name, ENT_QUOTES, $charset);
-            $result_dyn []= <<<E
-\$__mthamlmore_attri_value= htmlspecialchars($value, ENT_QUOTES, '$charset');
-$check echo ' $name="'.\$__mthamlmore_attri_value.'"' ;
+            $result_dyn [] = <<<E
+\$__mthamlmore_attri_value= $value;
+$check echo ' $name="',htmlspecialchars(\$__mthamlmore_attri_value, ENT_QUOTES, '$charset'),'"' ;
 E;
         }
     }
-    static private function returnDataAttributes(&$dest, $value, $prefix = 'data')
+
+    // rule: if the probability of array is not 0, retrue true. so 'functionName(abc)' will return true, because we don't know what functionName returns.
+    static protected function maybeArray($node)
     {
-        if (\is_array($value) || $value instanceof \Traversable) {
-            foreach ($value as $subname => $subvalue) {
-                self::returnDataAttributes($dest, $subvalue, $prefix.'-'.$subname);
+        if ($node instanceof \PHPParser_Node_Expr_Array) {
+            foreach ($node->items as $item) {
+                return self::maybeArray($item->value);
             }
-        } else {
-            if (!isset($dest[$prefix])) {
-                $dest[$prefix] = $value;
+        }
+        // condition ? if : else
+        if ($node instanceof \PHPParser_Node_Expr_Ternary) {
+            if (!self::ifDynPHPNodes(array($node->if, $node->else))) {
+                return false;
+            }
+        }
+        // $abc . 'abc'
+        if ($node instanceof \PHPParser_Node_Expr_Concat)
+            return false;
+        return self::ifDynPHPNode($node);
+    }
+
+    /*
+     * https://github.com/nikic/PHP-Parser/blob/master/lib/PHPParser/BuilderAbstract.php normalizeValue
+     */
+    static protected function ifDynPHPNode($node)
+    {
+        return !($node instanceof \PHPParser_Node_Scalar_String ||
+            $node instanceof \PHPParser_Node_Scalar_LNumber ||
+            $node instanceof \PHPParser_Node_Scalar_DNumber ||
+            $node instanceof \PHPParser_Node_Expr_ConstFetch);
+    }
+
+    static protected function ifDynPHPNodes(array $nodes)
+    {
+        foreach ($nodes as $node) {
+            if (self::ifDynPHPNode($node)) {
+                return true;
             }
         }
     }
-    static protected function returnJoinedValue(array $value,$separator,$dyn, $nest_array)
+
+    static protected function returnDataAttributesByPHPParser($node, $codeFetcher, &$dest, &$dyn, $prefix = 'data')
     {
-        if($dyn===true){
+        foreach ($node->items as $item) {
+            $value = $item->value;
+            if ($value instanceof \PHPParser_Node_Expr_Array) {
+                self::returnDataAttributesByPHPParser($value, $codeFetcher, $dest, $dyn, $prefix . '-' . $item->key->value);
+            } else {
+                $prefix_now = $prefix . '-' . ($item->key->value);
+                if (!isset($dest[$prefix_now])) {
+                    $dest[$prefix_now] = $codeFetcher->getNodeCode($value);
+                    if (self::ifDynPHPNode($value)) {
+                        $dyn[$prefix_now] = true;
+                    } else
+                        $dyn[$prefix_now] = false;
+                }
+
+            }
+        }
+
+    }
+
+static  protected  function pickEveryValueForClassId($value_node,$codeFetcher,&$attributes,&$nested,$name)
+{
+    // for joined values
+    if ($value_node instanceof \PHPParser_Node_Expr_Array) {
+
+        // if array in array, like :  .add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) }
+
+//                        if ($value_str[0] == '[' && substr($value_str, -1) == ']') {
+//                            // ([$item['type'],3])
+//                            $value_str = substr($value_str, 1, -1);
+//                        } else if (substr($value_str, 0, 6) == 'array(' && substr($value_str, -1) == ')') {
+//                            // (array($item['type'],3))
+//                            $value_str = substr($value_str, 6, -1);
+//                        }
+
+        foreach($value_node->items as $item){
+            self::pickEveryValueForClassId($item,$codeFetcher,$attributes,$nested,$name);
+        }
+
+
+    } else {
+        $value_str= $codeFetcher->getNodeCode($value_node);
+        if (isset($attributes[$name])) {
+            $attributes[$name][] = $value_str;
+        } else {
+            $attributes[$name] = array($value_str);
+        }
+        if($nested[$name]===false)
+            $nested[$name]= self::maybeArray($value_node);
+    }
+
+}
+    static protected function returnJoinedValueForClassId(array $value, $separator, $dyn, $nest_array,$multiple)
+    {
+        if ($dyn === true) {
             /*
               %span.ok(class="widget_#{widget.number}")
                 ->
@@ -246,25 +295,36 @@ E;
             */
             // array_filter : filter non-null value
             // array flatten : iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator($array)), FALSE);
-            if($nest_array){
-                return "implode('$separator',array_filter(".
-                    'iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( '.
-                            'array('.
-                                implode(',',$value) .
-                            ') '.
-                        ')), FALSE),'.
+            if ($nest_array) {
+                return "implode('$separator',array_filter(" .
+                'iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( ' .
+                'array(' .
+                implode(',', $value) .
+                ') ' .
+                ')), FALSE),' .
+                'function($v){return is_null($v)?false:true;}))';
+            } else {
+                if($multiple){
+                    return "implode('$separator',array_filter(" .
+                    'array(' .
+                    implode(',', $value) .
+                    '),' .
                     'function($v){return is_null($v)?false:true;}))';
+                }
+                else
+                    return $value[0];
             }
-            else{
-               return "implode('$separator',array_filter(".
-                   'array(' .
-                        implode(',',$value).
-                    '),'.
-                   'function($v){return is_null($v)?false:true;}))';
-            }
-        }else{
-            return implode($separator,$value);
+        } else {
+            return implode($separator, $value);
         }
+    }
+
+    static protected function getPHPParser()
+    {
+        if (is_null(self::$php_parser)) {
+            self::$php_parser = new \PHPParser_Parser(new LexerWithTokenOffsets);
+        }
+        return self::$php_parser;
     }
 
     public function enterHtmlTag(HtmlTag $node)
@@ -348,3 +408,55 @@ E;
 
 }
 
+class LexerWithTokenOffsets extends \PHPParser_Lexer
+{
+    public function getNextToken(&$value = null, &$startAttributes = null, &$endAttributes = null)
+    {
+        $tokenId = parent::getNextToken($value, $startAttributes, $endAttributes);
+        $startAttributes['startOffset'] = $endAttributes['endOffset'] = $this->pos;
+        return $tokenId;
+    }
+}
+
+class NodeCodeFetcher
+{
+    private $code;
+    private $tokenToStartOffset = array();
+    private $tokenToEndOffset = array();
+
+    public function __construct($code)
+    {
+        $this->code = $code;
+
+        $tokens = token_get_all($code);
+        $offset = 0;
+        foreach ($tokens as $pos => $token) {
+            if (is_array($token)) {
+                $len = strlen($token[1]);
+            } else {
+                $len = strlen($token); // not 1 due to b" bug
+            }
+
+            $this->tokenToStartOffset[$pos] = $offset;
+            $offset += $len;
+            $this->tokenToEndOffset[$pos] = $offset;
+        }
+    }
+
+    public function getNodeCode(\PHPParser_Node $node)
+    {
+        $startPos = $node->getAttribute('startOffset');
+        $endPos = $node->getAttribute('endOffset');
+        if ($startPos === null || $endPos === null) {
+            return ''; // just to be sure
+        }
+
+        $startOffset = $this->tokenToStartOffset[$startPos];
+        $endOffset = $this->tokenToEndOffset[$endPos];
+        return substr($this->code, $startOffset, $endOffset - $startOffset);
+    }
+}
+
+class ReduceRuntimeException extends MoreException
+{
+}

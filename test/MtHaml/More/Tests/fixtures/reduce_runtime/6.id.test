@@ -11,9 +11,9 @@ $compiled_file=$file.'..php';
 file_put_contents($compiled_file,$compiled);
 include $compiled_file;
 --HAML--
-%div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']] }
-#div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']>3?'big' :'small'] }
-#div{:class => [$item2['type'], $item2['urgency']], :id => [$item2['type'], $item2['number']>3?'big' :'small'] }
+%div{:class => array($item['type'], $item['urgency']), :id => array($item['type'], $item['number']) }
+#div{:class => array($item['type'], $item['urgency']), :id => array($item['type'], $item['number']>3?'big' :'small') }
+#div{:class => array($item2['type'], $item2['urgency']), :id => array($item2['type'], $item2['number']>3?'big' :'small') }
 --EXPECT--
 <div class="car loop" id="car-3"></div>
 <div class="car loop" id="car-small"></div>

@@ -18,12 +18,14 @@ use MtHaml\More\Log\LogInterface;
 class Environment extends \MtHaml\Environment
 {
 
-    public  $currentMoreEnv;
+    public $currentMoreEnv;
     public $noReduceRuntime=true;
+    public $reduceRuntimeArrayTolerant =false;
 
     public function compileString($string, $moreOption=array(),$returnRoot=false)
     {
         if(!empty($moreOption['reduce_runtime'])) $this->noReduceRuntime=false;
+        if (!empty($moreOption['reduce_runtime_array_tolerant'])) $this->reduceRuntimeArrayTolerant = true;
 
         if(empty( $moreOption['filename'])){
             return  parent::compileString($string, '[unnamed]');

@@ -37,7 +37,8 @@ class ReduceRuntimeTest extends TestCase
         }
         $this->assertException($parts);
 
-        $this->assertSame($parts['EXPECT_PHP'], str_replace("\r\n","\n",file_get_contents($file.'..php')));
+        if($parts['EXPECT_PHP'])
+            $this->assertSame($parts['EXPECT_PHP'], str_replace("\r\n","\n",file_get_contents($file.'..php')));
 
         file_put_contents($file . '.out', $out);
 

@@ -119,6 +119,27 @@ Not works
 code: MtHaml\More\NodeVisitor\PhpRenderer::renderDynamicAttributes
 
 
+### option 'reduce_runtime_array_tolerant'
+The :class and :id attributes can be specified as a Ruby array, like
+```
+#div{:class => array($position,$item2['type'], $item2['urgency']), :id => array($item2['type'], $item2['number']>3?'big' :'small') }
+```
+if no one of $position, $item2['type'], $item2['urgency'] or $item2['type'] is an array, you could add
+``` 'reduce_runtime_array_tolerant'=>true,``` to 3rd argument of compilePhpMoreHaml.
+It will produce less urgly php code because array flatten is not needed in this case.
+
+code: MtHaml\More\NodeVisitor\PhpRenderer::returnJoinedValueForClassId
+
+
+when option 'reduce_runtime_array_tolerant' is true , only these situations will use array flatten right now:
+
+1. if or else is an array in 'condition?if:else',like
+```
+%div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
+```
+2. (add your needs in : MtHaml\More\NodeVisitor\PhpRenderer::maybeArrayReturnedNode)
+
+
 extra feature 3 : prepare
 -----
 

@@ -2,6 +2,7 @@
 
 namespace MtHaml\More\NodeVisitor;
 
+use MtHaml\Environment;
 use MtHaml\Exception;
 use MtHaml\More\Exception\MoreException;
 use MtHaml\More\Node\HtmlTag;
@@ -15,6 +16,14 @@ use MtHaml\Runtime\AttributeInterpolation;
 class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInterface
 {
     static private $php_parser;
+    private $reduceRuntimeArrayTolerant = false;
+
+    public function __construct(Environment $env)
+    {
+        parent::__construct($env);
+        if ($env->reduceRuntimeArrayTolerant )
+            $this->reduceRuntimeArrayTolerant = true;
+    }
 
     /*
     %input(selected)
@@ -82,7 +91,8 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
             $codeFetcher = new NodeCodeFetcher($str_attrs_code);
             $attributes = array();
             $attributes_dyn = array();
-            $nestedArray_in_classOrIdValue = array('id' => false, 'class' => false);
+            $attributes_singleVar = array(); // :class=>$myClass,:href=>$url
+            $array_in_classOrIdValue = array('id' => false, 'class' => false);
 
             foreach ($stmts[0]->items as $item) {
                 $name = $item->value->items[0]->value;
@@ -96,18 +106,13 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                 $value_str = $codeFetcher->getNodeCode($value_node);
 
                 if ('data' === $name) {
-                    $value_str = '<?php ' . $value_str . ';';
-
-                    $data_stmts = self::getPHPParser()->parse($value_str);
-                    $data_codeFetcher = new NodeCodeFetcher($value_str);
-                    self::returnDataAttributesByPHPParser($data_stmts[0], $data_codeFetcher, $attributes, $attributes_dyn);
-
-
+                    self::parseDataAttributes($value_node, $codeFetcher, $attributes, $attributes_dyn, $attributes_singleVar);
                 } else if ('class' === $name || 'id' === $name) {
-                    self::pickEveryValueForClassId($value_node,$codeFetcher,$attributes,$nestedArray_in_classOrIdValue,$name);
+                    $this->pickEveryValueForClassId($value_node, $codeFetcher, $attributes, $array_in_classOrIdValue, $name);
                     if (!isset($attributes_dyn[$name]) || $attributes_dyn[$name] === false) {
-                        $attributes_dyn[$name] = self::ifDynPHPNode($value_node);
+                        $attributes_dyn[$name] = self::ifDynNode($value_node);
                     }
+                    $attributes_singleVar[$name] = $value_node;
 
 
                 } else if ('TRUE' === strtoupper($value_str)) {
@@ -117,8 +122,8 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                         $attributes[$name] = $name;
                     }
                     $attributes_dyn[$name] = false;
-                    //todo: null?
-                } else if ('false' === strtolower($value_str) || 'null' === strtolower($value_str)) {
+                    //todo: when null?
+                } else if (in_array(strtolower($value_str), array('false', 'null'), true)) {
                     // do not output
                 } else {
                     if (isset($attributes[$name])) {
@@ -127,23 +132,32 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                         unset($attributes[$name]);
                     }
                     $attributes[$name] = $value_str;
-                    if (self::ifDynPHPNode($value_node)) {
+                    if (self::ifDynNode($value_node)) {
                         $attributes_dyn[$name] = true;
+                        if ($value_node instanceof \PHPParser_Node_Expr_Variable)
+                            $attributes_singleVar[$name] = true;
+                        else
+                            $attributes_singleVar[$name] = false;
                     } else {
                         $attributes_dyn[$name] = false;
                     }
                 }
             }
 
-            $multiple=array();
-            foreach(array('class'=>' ','id'=>'-') as $item=>$sep){
-                if (isset($attributes[$item])) {
-                    if(count($attributes[$item])==1){
-                        $multiple[$item]=false;
-                    }else
-                        $multiple[$item]=true;
-
-                    $attributes[$item] = self::returnJoinedValueForClassId($attributes[$item], $sep, $attributes_dyn[$item], $nestedArray_in_classOrIdValue[$item],$multiple[$item]);
+            foreach (array('class' => ' ', 'id' => '-') as $name => $sep) {
+                if (isset($attributes[$name])) {
+                    if (count($attributes[$name]) == 1) {
+                        $singleItemForClassId = true;
+                        if ($attributes_singleVar[$name] instanceof \PHPParser_Node_Expr_Variable)
+                            $attributes_singleVar[$name] = true;
+                        else
+                            $attributes_singleVar[$name] = false;
+                    } else {
+                        $attributes_singleVar[$name] = false;
+                        $singleItemForClassId = false;
+                    }
+                    $attributes[$name] = self::returnJoinedValueForClassId($attributes[$name], $sep, $attributes_dyn[$name], $array_in_classOrIdValue[$name], $singleItemForClassId);
+                    unset($singleItemForClassId);
                 }
             }
 
@@ -161,7 +175,7 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                     $result .=
                         htmlspecialchars($name, ENT_QUOTES, $charset);
                 } else {
-                    self::renderOneAttribute($attributes_dyn, $name, $value, $charset, $result, $result_dyn,$multiple);
+                    self::renderOneAttribute($name, $value, $attributes_dyn[$name], !empty($attributes_singleVar[$name]), empty($array_in_classOrIdValue[$name]), $charset, $result, $result_dyn);
                 }
             }
             $result = ($result ? ' ' . trim($result) : '') .
@@ -172,78 +186,48 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
         }
     }
 
-    static protected function renderOneAttribute($attributes_dyn, $name, $value, $charset, &$result, &$result_dyn,$multiple)
+    static protected function renderOneAttribute($name, $value, $dyn, $singleVar, $array_no_exists, $charset, &$result, &$result_dyn)
     {
-        if ($attributes_dyn[$name] === false) {
+        if ($dyn === false) {
             $result .=
                 htmlspecialchars($name, ENT_QUOTES, $charset) .
                 '="' . htmlspecialchars(trim($value, "'"), ENT_QUOTES, $charset) . '"';
         } else {
-            if (($name == 'class' || $name == 'id') && $multiple[$name]) {
-                $check = 'if($__mthamlmore_attri_value!=="")';
-            } else {
-                $check = 'if(!is_null($__mthamlmore_attri_value))';
-            }
             $name = htmlspecialchars($name, ENT_QUOTES, $charset);
-            $result_dyn [] = <<<E
+            if ($singleVar && $array_no_exists) {
+                $result_dyn [] = <<<E
+if(!is_null($value)) echo ' $name="',htmlspecialchars($value, ENT_QUOTES, '$charset'),'"' ;
+E;
+            } else {
+                if (($name == 'class' || $name == 'id') && substr($value, 0, 9) == "implode('") {
+                    $check = 'if($__mthamlmore_attri_value!=="")';
+                } else {
+                    $check = 'if(!is_null($__mthamlmore_attri_value))';
+                }
+                $result_dyn [] = <<<E
 \$__mthamlmore_attri_value= $value;
 $check echo ' $name="',htmlspecialchars(\$__mthamlmore_attri_value, ENT_QUOTES, '$charset'),'"' ;
 E;
-        }
-    }
-
-    // rule: if the probability of array is not 0, retrue true. so 'functionName(abc)' will return true, because we don't know what functionName returns.
-    static protected function maybeArray($node)
-    {
-        if ($node instanceof \PHPParser_Node_Expr_Array) {
-            foreach ($node->items as $item) {
-                return self::maybeArray($item->value);
-            }
-        }
-        // condition ? if : else
-        if ($node instanceof \PHPParser_Node_Expr_Ternary) {
-            if (!self::ifDynPHPNodes(array($node->if, $node->else))) {
-                return false;
-            }
-        }
-        // $abc . 'abc'
-        if ($node instanceof \PHPParser_Node_Expr_Concat)
-            return false;
-        return self::ifDynPHPNode($node);
-    }
-
-    /*
-     * https://github.com/nikic/PHP-Parser/blob/master/lib/PHPParser/BuilderAbstract.php normalizeValue
-     */
-    static protected function ifDynPHPNode($node)
-    {
-        return !($node instanceof \PHPParser_Node_Scalar_String ||
-            $node instanceof \PHPParser_Node_Scalar_LNumber ||
-            $node instanceof \PHPParser_Node_Scalar_DNumber ||
-            $node instanceof \PHPParser_Node_Expr_ConstFetch);
-    }
-
-    static protected function ifDynPHPNodes(array $nodes)
-    {
-        foreach ($nodes as $node) {
-            if (self::ifDynPHPNode($node)) {
-                return true;
             }
         }
     }
 
-    static protected function returnDataAttributesByPHPParser($node, $codeFetcher, &$dest, &$dyn, $prefix = 'data')
+    static protected function parseDataAttributes($node, $codeFetcher, &$dest, &$dyn, &$singleValue, $prefix = 'data')
     {
         foreach ($node->items as $item) {
             $value = $item->value;
             if ($value instanceof \PHPParser_Node_Expr_Array) {
-                self::returnDataAttributesByPHPParser($value, $codeFetcher, $dest, $dyn, $prefix . '-' . $item->key->value);
+                self::parseDataAttributes($value, $codeFetcher, $dest, $dyn, $singleValue, $prefix . '-' . $item->key->value);
             } else {
                 $prefix_now = $prefix . '-' . ($item->key->value);
                 if (!isset($dest[$prefix_now])) {
                     $dest[$prefix_now] = $codeFetcher->getNodeCode($value);
-                    if (self::ifDynPHPNode($value)) {
+                    if (self::ifDynNode($value)) {
                         $dyn[$prefix_now] = true;
+                        if ($value instanceof \PHPParser_Node_Expr_Variable)
+                            $singleValue[$prefix_now] = true;
+                        else
+                            $singleValue[$prefix_now] = false;
                     } else
                         $dyn[$prefix_now] = false;
                 }
@@ -253,12 +237,12 @@ E;
 
     }
 
-static  protected  function pickEveryValueForClassId($value_node,$codeFetcher,&$attributes,&$nested,$name)
-{
-    // for joined values
-    if ($value_node instanceof \PHPParser_Node_Expr_Array) {
+    protected function pickEveryValueForClassId($value_node, $codeFetcher, &$attributes, &$array, $name)
+    {
+        // for joined values
+        if ($value_node instanceof \PHPParser_Node_Expr_Array) {
 
-        // if array in array, like :  .add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) }
+            // if array in array, like :  .add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) }
 
 //                        if ($value_str[0] == '[' && substr($value_str, -1) == ']') {
 //                            // ([$item['type'],3])
@@ -268,24 +252,26 @@ static  protected  function pickEveryValueForClassId($value_node,$codeFetcher,&$
 //                            $value_str = substr($value_str, 6, -1);
 //                        }
 
-        foreach($value_node->items as $item){
-            self::pickEveryValueForClassId($item,$codeFetcher,$attributes,$nested,$name);
-        }
+            foreach ($value_node->items as $item) {
+                // why $item->value? because $item is instance of PHPParser_Node_Expr_ArrayItem
+                self::pickEveryValueForClassId($item->value, $codeFetcher, $attributes, $array, $name);
+            }
 
 
-    } else {
-        $value_str= $codeFetcher->getNodeCode($value_node);
-        if (isset($attributes[$name])) {
-            $attributes[$name][] = $value_str;
         } else {
-            $attributes[$name] = array($value_str);
+            $value_str = $codeFetcher->getNodeCode($value_node);
+            if (isset($attributes[$name])) {
+                $attributes[$name][] = $value_str;
+            } else {
+                $attributes[$name] = array($value_str);
+            }
+            if ($array[$name] === false)
+                $array[$name] = self::maybeArrayReturnedNode($value_node, $this->reduceRuntimeArrayTolerant);
         }
-        if($nested[$name]===false)
-            $nested[$name]= self::maybeArray($value_node);
+
     }
 
-}
-    static protected function returnJoinedValueForClassId(array $value, $separator, $dyn, $nest_array,$multiple)
+    static protected function returnJoinedValueForClassId(array $value, $separator, $dyn, $array_maybe_exists, $single)
     {
         if ($dyn === true) {
             /*
@@ -295,7 +281,7 @@ static  protected  function pickEveryValueForClassId($value_node,$codeFetcher,&$
             */
             // array_filter : filter non-null value
             // array flatten : iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator($array)), FALSE);
-            if ($nest_array) {
+            if ($array_maybe_exists) {
                 return "implode('$separator',array_filter(" .
                 'iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( ' .
                 'array(' .
@@ -304,18 +290,75 @@ static  protected  function pickEveryValueForClassId($value_node,$codeFetcher,&$
                 ')), FALSE),' .
                 'function($v){return is_null($v)?false:true;}))';
             } else {
-                if($multiple){
+                if ($single) {
+                    return $value[0];
+                } else {
                     return "implode('$separator',array_filter(" .
                     'array(' .
                     implode(',', $value) .
                     '),' .
                     'function($v){return is_null($v)?false:true;}))';
                 }
-                else
-                    return $value[0];
             }
         } else {
             return implode($separator, $value);
+        }
+    }
+
+    /*
+     *  if node will be considered to return array
+    * rule: if the probability of array is not 0, retrue true. so 'functionName(abc)' will return true, because we don't know what functionName returns.
+     * dev:
+        no need to consider Array type
+        because  $this->pickEveryValueForClassId  has go into it and split into elements.
+        if ($node instanceof \PHPParser_Node_Expr_Array) { }
+     */
+    static protected function maybeArrayReturnedNode($node, $tolerant)
+    {
+        if ($tolerant) {
+            if ($node instanceof \PHPParser_Node_Expr_Ternary) {
+
+                if (($node->if instanceof \PHPParser_Node_Expr_Array) || ($node->else instanceof \PHPParser_Node_Expr_Array) )
+                    return true;
+            }
+//            if (($node instanceof \PHPParser_Node_Expr_Variable) ||
+//                ($node instanceof \PHPParser_Node_Expr_FuncCall)
+//            )
+//                return false;
+            return false;
+        } else {
+            // condition ? if : else
+            if ($node instanceof \PHPParser_Node_Expr_Ternary) {
+                if (!self::ifDynNodes(array($node->if, $node->else))) {
+                    return false;
+                }
+            } // $abc . 'abc'
+            else if ($node instanceof \PHPParser_Node_Expr_Concat)
+                return false;
+
+            return self::ifDynNode($node);
+        }
+
+    }
+
+
+    /*
+     * https://github.com/nikic/PHP-Parser/blob/master/lib/PHPParser/BuilderAbstract.php normalizeValue
+     */
+    static protected function ifDynNode($node)
+    {
+        return !($node instanceof \PHPParser_Node_Scalar_String ||
+            $node instanceof \PHPParser_Node_Scalar_LNumber ||
+            $node instanceof \PHPParser_Node_Scalar_DNumber ||
+            $node instanceof \PHPParser_Node_Expr_ConstFetch);
+    }
+
+    static protected function ifDynNodes(array $nodes)
+    {
+        foreach ($nodes as $node) {
+            if (self::ifDynNode($node)) {
+                return true;
+            }
         }
     }
 

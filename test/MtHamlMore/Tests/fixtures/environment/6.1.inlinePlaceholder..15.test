@@ -1,0 +1,22 @@
+--FILE--
+<?php
+echo MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@title
+    taiwan
+@title taiwan
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+$title="%h1 welcome to {@@}.";
+?>
+
+--EXPECT--
+<h1>welcome to taiwan.</h1>
+<h1>welcome to taiwan.</h1>
+

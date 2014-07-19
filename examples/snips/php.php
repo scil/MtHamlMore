@@ -1,4 +1,4 @@
--# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+-# SnipParser="\MtHamlMore\Snip\SnipFileParser"
 <?php
 // special vars, see README.md::Glossary uses && mixes
 $__MtHamlMore_uses=__DIR__.'\abstract.php';

@@ -1,4 +1,4 @@
--# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+-# SnipParser="\MtHamlMore\Snip\SnipFileParser"
 <?php
 
 $common_box=<<<S

@@ -13,13 +13,13 @@
 >
   <testsuites>
     <testsuite name="Environment">
-        <file>./test/MtHaml/More/Tests/ReduceRuntimeTest.php</file>
+        <file>./test/MtHamlMore/Tests/ReduceRuntimeTest.php</file>
     </testsuite>
   </testsuites>
 
   <filter>
     <whitelist>
-      <directory suffix=".php">./lib/MtHaml/More </directory>
+      <directory suffix=".php">./lib/MtHamlMore </directory>
     </whitelist>
   </filter>
 </phpunit>

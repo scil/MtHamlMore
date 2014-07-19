@@ -1,0 +1,29 @@
+--FILE--
+<?php
+echo MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+@uppertitle(user)
+@uppertitle{"hello world"}
+-# this is not allowed, quote character is illegal
+-# @uppertitle("hello world")
+-# this is not allowed, because 'user' will be treated as Insert, and will be evaled
+-# @uppertitle{user}
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+
+$uppertitle=function($title){
+    return <<<S
+%h1 $title
+S;
+};
+
+--EXPECT--
+<h1>user</h1>
+<h1>hello world</h1>
+

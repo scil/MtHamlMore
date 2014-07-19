@@ -75,7 +75,7 @@ which is supported by MtHaml, but also
 ```
 This feature enables you to copy any html code into a haml file, only make sure code apply haml indent syntax.
 
-code: MtHaml\More\Parser::parseHtmlTag
+code: MtHamlMore\Parser::parseHtmlTag
 
 
 
@@ -116,7 +116,7 @@ Not works
 
 
 
-code: MtHaml\More\NodeVisitor\PhpRenderer::renderDynamicAttributes
+code: MtHamlMore\NodeVisitor\PhpRenderer::renderDynamicAttributes
 
 
 ### option 'reduce_runtime_array_tolerant'
@@ -128,7 +128,7 @@ if no one of $position, $item2['type'], $item2['urgency'] or $item2['type'] is a
 ``` 'reduce_runtime_array_tolerant'=>true,``` to 3rd argument of compilePhpMoreHaml.
 It will produce less urgly php code because array flatten is not needed in this case.
 
-code: MtHaml\More\NodeVisitor\PhpRenderer::returnJoinedValueForClassId
+code: MtHamlMore\NodeVisitor\PhpRenderer::returnJoinedValueForClassId
 
 
 when option 'reduce_runtime_array_tolerant' is true , only these situations will use array flatten right now:
@@ -137,7 +137,7 @@ when option 'reduce_runtime_array_tolerant' is true , only these situations will
 ```
 %div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
 ```
-2. (add your needs in : MtHaml\More\NodeVisitor\PhpRenderer::maybeArrayReturnedNode)
+2. (add your needs in : MtHamlMore\NodeVisitor\PhpRenderer::maybeArrayReturnedNode)
 
 
 extra feature 3 : prepare
@@ -165,5 +165,5 @@ this is normal haml code,which will be compiled to
 
 notice: {% .. %} must monopolize one line, because regular expression uses '^' and '$'.
 
-code: MtHaml\More\Environment::prepare
+code: MtHamlMore\Environment::prepare
 

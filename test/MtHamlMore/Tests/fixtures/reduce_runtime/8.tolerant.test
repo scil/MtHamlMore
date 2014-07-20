@@ -7,7 +7,7 @@ $item2=array('type'=>'truck','urgency'=>'loop','number'=>33,'is_empty'=>true);
 $sortdir='desc';
 $sortcol=$item;
 
-$compiled =  MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+$compiled =  MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>true),array(
     'reduce_runtime' => true,
     'reduce_runtime_array_tolerant'=>true,
 ));

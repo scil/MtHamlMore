@@ -76,11 +76,12 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
         parent::renderDynamicAttributes($tag);
         $newOutput = substr($this->output, strlen($oldOutput));
         // <attrs> like: 'title',(title)),array('href',href),array('id',id
-        $re = '@^ <\?php echo MtHaml\\\\Runtime::renderAttributes\((?<attrs>array\(array\(.+\)\)), \'(?<format>\w+)\', \'(?<charset>[-\w]+)\'\); \?>$@';
+        $re = '@^ <\?php echo MtHaml\\\\Runtime::renderAttributes\((?<attrs>array\(array\(.+\)\)), \'(?<format>\w+)\', \'(?<charset>[-\w]+)\'(?:, (?<escape>true|false))?\); \?>$@';
         if (preg_match($re, $newOutput, $matches)) {
             $str_attrs = $matches['attrs'];
             $format = $matches['format'];
             $charset = $matches['charset'];
+            $escape=isset($matches['escape'])? ($matches['escape']=='true'?true:false) : true;
             if (strpos($str_attrs, 'AttributeInterpolation') !== false || strpos($str_attrs, 'AttributeList') !== false) {
                 //todo
                 throw new ReduceRuntimeException(' AttributeInterpolation or AttributeList');
@@ -173,9 +174,9 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                     $result .= $value->value;
                 } else if (true === $value) {
                     $result .=
-                        htmlspecialchars($name, ENT_QUOTES, $charset);
+                        $escape ? htmlspecialchars($name, ENT_QUOTES, $charset) : $name;
                 } else {
-                    self::renderOneAttribute($name, $value, $attributes_dyn[$name], !empty($attributes_singleVar[$name]), empty($array_in_classOrIdValue[$name]), $charset, $result, $result_dyn);
+                    self::renderOneAttribute($name, $value,$escape, $attributes_dyn[$name], !empty($attributes_singleVar[$name]), empty($array_in_classOrIdValue[$name]), $charset, $result, $result_dyn);
                 }
             }
             $result = ($result ? ' ' . trim($result) : '') .
@@ -186,17 +187,23 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
         }
     }
 
-    static protected function renderOneAttribute($name, $value, $dyn, $singleVar, $array_no_exists, $charset, &$result, &$result_dyn)
+    static protected function renderOneAttribute($name, $value,$escape, $dyn, $singleVar, $array_no_exists, $charset, &$result, &$result_dyn)
     {
         if ($dyn === false) {
+            if ($escape)
             $result .=
                 htmlspecialchars($name, ENT_QUOTES, $charset) .
                 '="' . htmlspecialchars(trim($value, "'"), ENT_QUOTES, $charset) . '"';
+            else
+                $result .=
+                    $name.
+                    '="' . trim($value, "'") . '"';
         } else {
-            $name = htmlspecialchars($name, ENT_QUOTES, $charset);
+            $name = $escape ? htmlspecialchars($name, ENT_QUOTES, $charset) : $name;
             if ($singleVar && $array_no_exists) {
+                $namevalue= $escape ? "htmlspecialchars($value, ENT_QUOTES, '$charset')" :$value ;
                 $result_dyn [] = <<<E
-if(!is_null($value)) echo ' $name="',htmlspecialchars($value, ENT_QUOTES, '$charset'),'"' ;
+if(!is_null($value)) echo ' $name="',$namevalue,'"' ;
 E;
             } else {
                 if (($name == 'class' || $name == 'id') && substr($value, 0, 9) == "implode('") {
@@ -204,9 +211,10 @@ E;
                 } else {
                     $check = 'if(!is_null($__mthamlmore_attri_value))';
                 }
+                $namevalue= $escape ?  "htmlspecialchars(\$__mthamlmore_attri_value, ENT_QUOTES, '$charset')":'$__mthamlmore_attri_value' ;
                 $result_dyn [] = <<<E
 \$__mthamlmore_attri_value= $value;
-$check echo ' $name="',htmlspecialchars(\$__mthamlmore_attri_value, ENT_QUOTES, '$charset'),'"' ;
+$check echo ' $name="',$namevalue,'"' ;
 E;
             }
         }

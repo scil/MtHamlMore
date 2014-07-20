@@ -3,7 +3,7 @@
 
 $href='www.g.cn';
 
-$compiled =  MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+$compiled =  MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>true),array(
     'reduce_runtime' => true,
 ));
 $compiled_file=$file.'..php';

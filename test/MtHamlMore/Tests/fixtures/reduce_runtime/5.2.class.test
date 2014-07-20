@@ -6,7 +6,7 @@ $item2=array('type'=>'car','urgency'=>'loop','number'=>3,'is_empty'=>true);
 $sortdir='desc';
 $sortcol=$item2;
 
-$compiled =  MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+$compiled =  MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>true),array(
     'reduce_runtime' => true,
 ));
 $compiled_file=$file.'..php';

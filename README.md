@@ -5,6 +5,8 @@ Add some features like snippet to MtHaml,  main purpose is “Don't Reinvent the
 
 Currently only php is supported , no Twig.
 
+Install method: add ``` "scil/mthaml-more": "*" ``` to composer.json, see details at docs.
+
 Main Feature :snip
 ----
 if there is a box structure which is used many times, you can define it as a snip,for example

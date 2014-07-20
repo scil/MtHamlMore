@@ -5,7 +5,7 @@ Add some features like snippet to MtHaml,  main purpose is “Don't Reinvent the
 
 Currently only php is supported , no Twig.
 
-main feature :snip
+Main Feature :snip
 ----
 if there is a box structure which is used many times, you can define it as a snip,for example
 ```
@@ -17,14 +17,14 @@ $box=<<<S
 S;
 ```
 
-then in your haml file write
+write haml like so:
 ```
 @box
     _ this is title
     _ this is content
 ```
 
-output html will is
+output html :
 ```
 <div class="title">
   this is title
@@ -34,7 +34,7 @@ output html will is
 </div>
 ```
 
-'@@@' is placeholder where you can put your own content,and you could define default values for it.
+'@@@' is a placeholder where you can put your own content,and you could define default value for it.
 
 
 second example
@@ -43,7 +43,7 @@ second example
   _ %h1 4
   _ 4 offset 4
 ```
-This is calling a snip named grid, and two arguments. Usually, i use snip @grid to define grid layout.
+This is calling a snip named grid, and two arguments. Usually, I use snip @grid to define grid layout.
 'fluid="1"' is fluid layout, 'grid="4 -4 4" is one type of 12 columns grid.
 What this statement output depends on how your snip writes.
 In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2 grid. In case of this,output would be
@@ -60,7 +60,9 @@ In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2
 
 see more examples at : "docs/0. Snip Examples.md"
 
-extra feature 1 : HtmlTag
+
+
+Extra Feature 1 : HtmlTag
 -----
 html tags can be used like haml tag ,not only
 ```
@@ -79,7 +81,7 @@ code: MtHamlMore\Parser::parseHtmlTag
 
 
 
-extra feature 2 : reduce runtime
+Extra Feature 2 : reduce runtime
 -----
 Sometimes there are some 'MtHaml\Runtime' in php files produced by MtHaml, if you dislike it and accept ugly php files,you may try
 ```
@@ -98,14 +100,24 @@ It's not perfect,but works in normal situation.
 Works well for these haml:
 ```
 %input(selected)
+
 %input(selected=true)
+
 %a(title="title" href=$href) Stuff
+
 %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
+
 %span.ok(class="widget_#{$widget['number']}")
+
 .item{:class => $item['is_empty'] ? "empty":null}
+
 %div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
+
 #div{:class => array($item['type'], $item['urgency']), :id => array($item['type'], $item['number']>3?'big' :'small') }
+
 %a{:data => array('author_id' => $data_id,'abc'=>array('ok'=>3,'no'=>$data_id+1))}
+
+
 ```
 
 Not works
@@ -117,6 +129,7 @@ Not works
 
 
 code: MtHamlMore\NodeVisitor\PhpRenderer::renderDynamicAttributes
+
 
 
 ### option 'reduce_runtime_array_tolerant'
@@ -133,30 +146,37 @@ code: MtHamlMore\NodeVisitor\PhpRenderer::returnJoinedValueForClassId
 
 when option 'reduce_runtime_array_tolerant' is true , only these situations will use array flatten right now:
 
-1. if or else is an array in 'condition?if:else',like
+* if or else is an array in 'condition?if:else',like
 ```
 %div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
 ```
-2. (add your needs in : MtHamlMore\NodeVisitor\PhpRenderer::maybeArrayReturnedNode)
+* (add your needs in : MtHamlMore\NodeVisitor\PhpRenderer::maybeArrayReturnedNode)
 
 
-extra feature 3 : prepare
+
+
+Extra Feature 3 : prepare
 -----
 
-if you set options 'prepare'=>true , MtHamlMore will first change code
+if you set options 'prepare'=>true , MtHamlMore will first execute php code defined by {% %} and {= =}.
+
+like this:
 ```
 {% $address='http://program-think.blogspot.com';$name='scil' %}
 %div my name is {= $name =}, i love this IT blog {= $address =} which is blocked by GFW
 ```
-to
+
+executed to
 ```
 <?php $address='http://program-think.blogspot.com';$name='scil' ; ?>
 %div my name is <?php echo $name ; ?>, i love this IT blog <?php echo $address ; ?> which is blocked by GFW
 ```
+
 then, to
 ```
 %div my name is scil, i love this IT blog http://program-think.blogspot.com which is blocked by GFW
 ```
+
 this is normal haml code,which will be compiled to
 ```
 <div>my name is scil, i love this it blog http://program-think.blogspot.com which is blocked by GFW</div>
@@ -166,4 +186,5 @@ this is normal haml code,which will be compiled to
 notice: {% .. %} must monopolize one line, because regular expression uses '^' and '$'.
 
 code: MtHamlMore\Environment::prepare
+
 

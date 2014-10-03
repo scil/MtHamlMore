@@ -32,5 +32,16 @@ class Entry
             throw new Exception\MoreException('plz supply 2nd arg when calling this func first time');
         }
     }
+    static function compileTwigMoreHaml($hamlstr, $options, $moreOptions = null)
+    {
+        static $env;
+        if (!is_null($options))
+            $env = new Environment('twig_more', $options);
+        if ($env)
+            return $env->compileString($hamlstr, $moreOptions);
+        else {
+            throw new Exception\MoreException('plz supply 2nd arg when calling this func first time');
+        }
+    }
 
 }

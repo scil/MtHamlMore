@@ -4,7 +4,7 @@ namespace MtHamlMore\Snip;
 
 use MtHaml\Exception;
 use MtHamlMore\Exception\SnipHouseException;
-use MtHamlMore\Lib;
+use MtHamlMore\Lib\File;
 
 class SnipHouse implements SnipHouseInterface
 {
@@ -58,7 +58,7 @@ class SnipHouse implements SnipHouseInterface
             $files = explode(';', $files);
         }
         // no need to check exists, addFile do this work later
-        $files = Lib::parseFiles($files, false);
+        $files = File::parseFiles($files, false);
 
 
         foreach ($files as $file) {

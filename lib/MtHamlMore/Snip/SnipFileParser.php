@@ -2,7 +2,7 @@
 namespace MtHamlMore\Snip;
 
 use MtHamlMore\Exception\SnipFileParserException;
-use MtHamlMore\Lib;
+use MtHamlMore\Lib\File;
 
 /* snip file var name rule:
  not allowed  name :
@@ -31,12 +31,12 @@ class SnipFileParser implements SnipFileParserInterface
 
     public function getUses()
     {
-        return $this->uses ? Lib::parseFiles($this->uses) : array();
+        return $this->uses ? File::parseFiles($this->uses) : array();
     }
 
     public function getMixes()
     {
-        return $this->mixes ? Lib::parseFiles($this->mixes) : array();
+        return $this->mixes ? File::parseFiles($this->mixes) : array();
     }
     public static function snipCaller($snip, $arg, $file)
     {

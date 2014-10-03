@@ -3,7 +3,7 @@ MtHamlMore
 
 Add some features like snippet to MtHaml,  main purpose is “Don't Reinvent the Wheel".
 
-Currently only php is supported , no Twig.
+Both php and Twig are supported.
 
 Install method: add ``` "scil/mthaml-more": "*" ``` to composer.json, see details at docs.
 
@@ -129,6 +129,8 @@ Not works
 2. (welcome add your find)
 
 
+
+This feature supported only for php ,not Twig.
 
 code: MtHamlMore\NodeVisitor\PhpRenderer::renderDynamicAttributes
 

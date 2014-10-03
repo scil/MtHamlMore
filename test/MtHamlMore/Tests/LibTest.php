@@ -2,7 +2,7 @@
 
 namespace MtHamlMore\Tests;
 
-use MtHamlMore\Lib;
+use MtHamlMore\Lib\File;
 
 /**
  *
@@ -14,7 +14,7 @@ class LibTest extends \PHPUnit_Framework_TestCase
      */
     public function testPaeseFiles($expectedFiles, $files)
     {
-       $parsedFiles= Lib::parseFiles($files,false);
+       $parsedFiles= File::parseFiles($files,false);
         $expectedFiles = str_replace(array('\\'), array('/'), $expectedFiles);
         $parsedFiles = str_replace(array('\\'), array('/'), $parsedFiles);
         $this->assertEquals($expectedFiles, $parsedFiles);
@@ -53,7 +53,7 @@ class LibTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(
             'Exception', "file no exists ${files[0]}"
         );
-        Lib::parseFiles($files);
+        File::parseFiles($files);
 
     }
     function filesArray2()

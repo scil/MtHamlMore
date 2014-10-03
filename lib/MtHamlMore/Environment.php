@@ -14,6 +14,7 @@ use MtHamlMore\NodeVisitor\MakesurePlaceholderValue;
 use MtHamlMore\Snip\SnipHouse;
 use MtHamlMore\Log\Log;
 use MtHamlMore\Log\LogInterface;
+use MtHamlMore\Target\TwigMore;
 
 class Environment extends \MtHaml\Environment
 {
@@ -255,6 +256,9 @@ class Environment extends \MtHaml\Environment
             switch ($target) {
                 case 'php_more':
                     $target = new PhpMore;
+                    break;
+                case 'twig_more':
+                    $target = new TwigMore;
                     break;
                 case 'php':
                     $target = new Php;

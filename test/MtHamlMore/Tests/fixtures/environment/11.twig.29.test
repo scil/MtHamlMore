@@ -1,0 +1,36 @@
+--FILE--
+<?php
+echo MtHamlMore\Entry::compileTwigMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+));
+
+--HAML--
+%ul#users
+  - for user in users
+    %li.user
+      = user.name
+      Email: #{user.email}
+      %a(href=user.url) Home page
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+$footer=<<<S
+.footer
+    @@@top
+    @@@bottom powered by MtHaml
+S;
+?>
+
+--EXPECT--
+<ul id="users">
+  {% for user in users %}
+    <li class="user">
+      {{ user.name }}
+      Email: {{ user.email }}
+      <a {{ mthaml_attributes([['href', (user.url)]], 'html5', 'UTF-8', false)|raw }}>Home page</a>
+    </li>
+  {% endfor %}
+</ul>
+

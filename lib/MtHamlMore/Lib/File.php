@@ -1,10 +1,10 @@
 <?php
 
-namespace MtHamlMore;
+namespace MtHamlMore\Lib;
 
 use MtHamlMore\Exception\MoreException;
 
-class Lib
+class File
 {
     /*
      * parse array composed of file path str or glob str

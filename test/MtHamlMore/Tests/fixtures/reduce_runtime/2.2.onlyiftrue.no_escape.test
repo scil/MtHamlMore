@@ -20,10 +20,7 @@ include $compiled_file;
 <div id="item"></div>
 
 --EXPECT_PHP--
-<div<?php $__mthamlmore_attri_value= implode(' ',array_filter(array('item',$item['is_empty'] ? "empty":null),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' class="',$__mthamlmore_attri_value,'"' ; ?>></div>
-<div<?php $__mthamlmore_attri_value= implode(' ',array_filter(array('item',$item2['is_empty'] ? "empty":null),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' class="',$__mthamlmore_attri_value,'"' ; ?>></div>
-<div id="item"<?php $__mthamlmore_attri_value= $item['is_empty'] ? "empty":null;
-if(!is_null($__mthamlmore_attri_value)) echo ' class="',$__mthamlmore_attri_value,'"' ; ?>></div>
+<div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array('item',$item['is_empty'] ? "empty":null) ,false,true,''); ?>></div>
+<div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array('item',$item2['is_empty'] ? "empty":null) ,false,true,''); ?>></div>
+<div id="item"<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array($item['is_empty'] ? "empty":null) ,false,true,''); ?>></div>
 

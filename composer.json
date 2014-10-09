@@ -19,7 +19,8 @@
     "autoload": {
 		"classmap": ["lib/MtHamlMore/Node/hackNodeAbstract.php","lib/MtHamlMore/Node/hackNestAbstract.php"],
         "psr-0": {
-            "MtHamlMore\\": "lib/"
+            "MtHamlMore\\": "lib/",
+            "MtHamlMoreRuntime\\": "lib/"
         }
     }
 }

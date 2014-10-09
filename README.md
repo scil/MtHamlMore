@@ -85,7 +85,7 @@ code: MtHamlMore\Parser::parseHtmlTag
 
 Extra Feature 2 : reduce runtime
 -----
-Sometimes there are some 'MtHaml\Runtime' in php files produced by MtHaml, if you dislike it and accept ugly php files,you may try
+Sometimes there are some 'MtHaml\Runtime' in php files produced by MtHaml, if you dislike it ,you may try
 ```
 $compiled = compilePhpMoreHaml(
     file_get_contents($hamlfile),
@@ -95,7 +95,7 @@ $compiled = compilePhpMoreHaml(
         'reduce_runtime' => true,
 ));
 ```
-'reduce_runtime'=>true could reduce the appearance of 'MtHaml\Runtime'.
+'reduce_runtime'=>true could reduce the appearance of 'MtHaml\Runtime',or replace it with \MtHamlMoreRuntime\Runtime::renderAttribute which is much simpler.
 
 It's not perfect,but works in normal situation.
 
@@ -132,7 +132,9 @@ Not works
 
 This feature supported only for php ,not Twig.
 
-code: MtHamlMore\NodeVisitor\PhpRenderer::renderDynamicAttributes
+code:
+* MtHamlMore\NodeVisitor\PhpRenderer::renderDynamicAttributes
+* MtHamlMoreRuntime\Runtime::renderAttribute
 
 
 
@@ -143,7 +145,7 @@ The :class and :id attributes can be specified as a Ruby array, like
 ```
 if no one of $position, $item2['type'], $item2['urgency'] or $item2['type'] is an array, you could add
 ``` 'reduce_runtime_array_tolerant'=>true,``` to 3rd argument of compilePhpMoreHaml.
-It will produce less urgly php code because array flatten is not needed in this case.
+Then array flatten is not needed in this case.
 
 code: MtHamlMore\NodeVisitor\PhpRenderer::returnJoinedValueForClassId
 

@@ -172,7 +172,7 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                 }
             }
 
-            foreach (array('class' => ' ', 'id' => '-') as $name => $sep) {
+            foreach (array('class' , 'id' ) as $name ) {
                 if (isset($attributes[$name])) {
                     if (count($attributes[$name]) == 1) {
                         $singleItemForClassId = true;
@@ -184,7 +184,6 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                         $attributes_singleVar[$name] = false;
                         $singleItemForClassId = false;
                     }
-                    $attributes[$name] = self::returnJoinedValueForClassId($attributes[$name], $sep, $attributes_dyn[$name], $array_in_classOrIdValue[$name], $singleItemForClassId);
                     unset($singleItemForClassId);
                 }
             }
@@ -217,6 +216,9 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
     static protected function renderOneAttribute($name, $value,$escape, $dyn, $singleVar, $array_no_exists, $charset, &$result, &$result_dyn)
     {
         if ($dyn === false) {
+            if(is_array($value)){ // for class or id
+                $value= implode($name=='class'?' ':'-',$value);
+            }
             if ($escape)
             $result .=
                 htmlspecialchars($name, ENT_QUOTES, $charset) .
@@ -227,6 +229,16 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
                     '="' . trim($value, "'") . '"';
         } else {
             $name = $escape ? htmlspecialchars($name, ENT_QUOTES, $charset) : $name;
+
+            if(is_array($value)){
+                $value=  'array(' . implode(',', $value) . ') ';
+            }
+            $s=$singleVar?'true':'false';
+            $a=$array_no_exists?'true':'false';
+            $e=$escape?$charset:false;
+            $result_dyn [] =  "\MtHamlMoreRuntime\Runtime::renderAttribute('$name',$value,$s,$a,'$e');";
+            return;
+
             if ($singleVar && $array_no_exists) {
                 $namevalue= $escape ? "htmlspecialchars($value, ENT_QUOTES, '$charset')" :$value ;
                 $result_dyn [] = <<<E
@@ -304,40 +316,6 @@ E;
                 $array[$name] = self::maybeArrayReturnedNode($value_node, $this->reduceRuntimeArrayTolerant);
         }
 
-    }
-
-    static protected function returnJoinedValueForClassId(array $value, $separator, $dyn, $array_maybe_exists, $single)
-    {
-        if ($dyn === true) {
-            /*
-              %span.ok(class="widget_#{widget.number}")
-                ->
-              implode(' ',array('ok',('widget_' . (widget.number)))
-            */
-            // array_filter : filter non-null value
-            // array flatten : iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator($array)), FALSE);
-            if ($array_maybe_exists) {
-                return "implode('$separator',array_filter(" .
-                'iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( ' .
-                'array(' .
-                implode(',', $value) .
-                ') ' .
-                ')), FALSE),' .
-                'function($v){return is_null($v)?false:true;}))';
-            } else {
-                if ($single) {
-                    return $value[0];
-                } else {
-                    return "implode('$separator',array_filter(" .
-                    'array(' .
-                    implode(',', $value) .
-                    '),' .
-                    'function($v){return is_null($v)?false:true;}))';
-                }
-            }
-        } else {
-            return implode($separator, $value);
-        }
     }
 
     /*

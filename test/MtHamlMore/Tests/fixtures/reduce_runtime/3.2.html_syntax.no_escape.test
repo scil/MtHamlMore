@@ -17,8 +17,6 @@ include $compiled_file;
 <script type="text/javascript" src="javascripts/script_9"></script>
 
 --EXPECT_PHP--
-<a title="title"<?php if(!is_null($href)) echo ' href="',$href,'"' ;$__mthamlmore_attri_value= implode('-',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array(strlen($href)) )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' id="',$__mthamlmore_attri_value,'"' ; ?>>Stuff</a>
-<script type="text/javascript"<?php $__mthamlmore_attri_value= 'javascripts/script_' . (2 + 7);
-if(!is_null($__mthamlmore_attri_value)) echo ' src="',$__mthamlmore_attri_value,'"' ; ?>></script>
+<a title="title"<?php \MtHamlMoreRuntime\Runtime::renderAttribute('href',$href,true,true,'');\MtHamlMoreRuntime\Runtime::renderAttribute('id',array(strlen($href)) ,false,false,''); ?>>Stuff</a>
+<script type="text/javascript"<?php \MtHamlMoreRuntime\Runtime::renderAttribute('src','javascripts/script_' . (2 + 7),false,true,''); ?>></script>
 

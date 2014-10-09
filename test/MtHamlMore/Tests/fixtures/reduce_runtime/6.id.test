@@ -20,13 +20,7 @@ include $compiled_file;
 <div class="truck loop" id="truck-big"></div>
 
 --EXPECT_PHP--
-<div<?php $__mthamlmore_attri_value= implode(' ',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array($item['type'],$item['urgency']) )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' class="',htmlspecialchars($__mthamlmore_attri_value, ENT_QUOTES, 'UTF-8'),'"' ;$__mthamlmore_attri_value= implode('-',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array($item['type'],$item['number']) )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' id="',htmlspecialchars($__mthamlmore_attri_value, ENT_QUOTES, 'UTF-8'),'"' ; ?>></div>
-<div<?php $__mthamlmore_attri_value= implode(' ',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array($item['type'],$item['urgency']) )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' class="',htmlspecialchars($__mthamlmore_attri_value, ENT_QUOTES, 'UTF-8'),'"' ;$__mthamlmore_attri_value= implode('-',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array($item['type'],$item['number']>3?'big' :'small') )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' id="',htmlspecialchars($__mthamlmore_attri_value, ENT_QUOTES, 'UTF-8'),'"' ; ?>></div>
-<div<?php $__mthamlmore_attri_value= implode(' ',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array($item2['type'],$item2['urgency']) )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' class="',htmlspecialchars($__mthamlmore_attri_value, ENT_QUOTES, 'UTF-8'),'"' ;$__mthamlmore_attri_value= implode('-',array_filter(iterator_to_array(new RecursiveIteratorIterator( new RecursiveArrayIterator( array($item2['type'],$item2['number']>3?'big' :'small') )), FALSE),function($v){return is_null($v)?false:true;}));
-if($__mthamlmore_attri_value!=="") echo ' id="',htmlspecialchars($__mthamlmore_attri_value, ENT_QUOTES, 'UTF-8'),'"' ; ?>></div>
+<div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array($item['type'],$item['urgency']) ,false,false,'UTF-8');\MtHamlMoreRuntime\Runtime::renderAttribute('id',array($item['type'],$item['number']) ,false,false,'UTF-8'); ?>></div>
+<div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array($item['type'],$item['urgency']) ,false,false,'UTF-8');\MtHamlMoreRuntime\Runtime::renderAttribute('id',array($item['type'],$item['number']>3?'big' :'small') ,false,false,'UTF-8'); ?>></div>
+<div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array($item2['type'],$item2['urgency']) ,false,false,'UTF-8');\MtHamlMoreRuntime\Runtime::renderAttribute('id',array($item2['type'],$item2['number']>3?'big' :'small') ,false,false,'UTF-8'); ?>></div>
 

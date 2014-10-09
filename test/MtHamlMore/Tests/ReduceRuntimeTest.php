@@ -9,7 +9,7 @@ require_once ROOT_DIR. '/vendor/mthaml/mthaml/test/MtHaml/Tests/TestCase.php';
 class ReduceRuntimeTest extends TestCase
 {
     /** @dataProvider getReduceRuntimeTests */
-    public function testEnvironment($file)
+    public function testReduceRuntime($file)
     {
         $parts = $this->parseTestFile($file);
 

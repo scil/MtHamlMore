@@ -33,17 +33,21 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
     %input(selected=true)
         rendered by MtHaml:
              <?php echo MtHaml\Runtime::renderAttributes(array(array('selected', true)), 'html5', 'UTF-8'); ?>
-    %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
-        rendered by MtHaml:
-            <?php echo MtHaml\Runtime::renderAttributes(array(array('title', 'title'), array('href', href)), 'html5', 'UTF-8'); ?>
-        attributes_dyn: type is not dyn; but src is
+
     %a(title="title" href=href) Stuff
         rendered by MtHaml:
-            <?php echo MtHaml\Runtime::renderAttributes(array(array('type', 'text/javascript'), array('src', ('javascripts/script_' . (2 + 7)))), 'html5', 'UTF-8'); ?>
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('title', 'title'), array('href', href)), 'html5', 'UTF-8'); ?>
         attributes_dyn: title is not dyn, but href is
+
+    %script{:type => "text/javascript", :src => "javascripts/script_#{2 + 7}"}
+        rendered by MtHaml:
+            <?php echo MtHaml\Runtime::renderAttributes(array(array('type', 'text/javascript'), array('src', ('javascripts/script_' . (2 + 7)))), 'html5', 'UTF-8'); ?>
+        attributes_dyn: type is not dyn; but src is
+
     %span.ok(class="widget_#{widget.number}")
         rendered by MtHaml:
             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'ok'), array('class', ('widget_' . (widget.number)))), 'html5', 'UTF-8'); ?>
+
     %div{:class => [$item['type'], $item['urgency']], :id => [$item['type'], $item['number']] }
         rendered by MtHaml:
              <?php echo MtHaml\Runtime::renderAttributes(array(array('class', ([$item['type'], $item['urgency']])), array('id', ([$item['type'], $item['number']]))), 'html5', 'UTF-8'); ?>
@@ -51,17 +55,25 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
     .item{:class => $item['is_empty'] ? "empty":null}
         rendered by MtHaml:
             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'item'), array('class', ($item['is_empty'] ? "empty":null))), 'html5', 'UTF-8'); ?>
-        %div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
-      writed as->
-        %div.add{:class => [$item['type'], $item == $sortcol ? array('sort', $sortdir):null] } Contents
+
+    %div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
+        writed as->
+    %div.add{:class => [$item['type'], $item == $sortcol ? array('sort', $sortdir):null] } Contents
         rendered by MtHaml:
             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'add'), array('class', ([$item['type'], $item == $sortcol ? array('sort', $sortdir):null]))), 'html5', 'UTF-8'); ?>
+
+
+
+    ### data ###
+
     %a{:href=>"/posts", :data => ['author_id' => 123]} Posts By Author
         rendered by MtHaml:
             <a <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => 123]))), 'html5', 'UTF-8'); ?>>Posts By Author</a>
-    'author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1
+
+    %a{:href=>"/posts", :data => ['author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1]}
         rendered by MtHaml:
              <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => $data_id,'ok' => 3, 'no'=>$data_id+1]))), 'html5', 'UTF-8'); ?>
+
     %a{:href=>"/posts", :data => ['author_id' => array('ok'=>3,'no'=>4)]} Posts By Author
         rendered by MtHaml:
             <a <?php echo MtHaml\Runtime::renderAttributes(array(array('href', '/posts'), array('data', (['author_id' => array('ok'=>3,'no'=>4)]))), 'html5', 'UTF-8'); ?>>Posts By Author</a>
@@ -76,8 +88,19 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
         $oldLineNo = $this->lineno;
         parent::renderDynamicAttributes($tag);
         $newOutput = substr($this->output, strlen($oldOutput));
-        // <attrs> like: 'title',(title)),array('href',href),array('id',id
-        $re = '@^ <\?php echo MtHaml\\\\Runtime::renderAttributes\((?<attrs>array\(array\(.+\)\)), \'(?<format>\w+)\', \'(?<charset>[-\w]+)\'(?:, (?<escape>true|false))?\); \?>$@';
+        // <attrs> like: array(array('title',(title)),array('href',href),array('id',id))
+        $re = '@
+\ <\?php\ echo\ MtHaml\\\\Runtime::renderAttributes\(
+(?<attrs>array\(array\(.+\)\))
+,\ \'
+(?<format>\w+)
+\',\ \'
+(?<charset>[-\w]+)\'
+(?:,\ (?<escape>true|false)
+ )?
+\);\ \?>
+@xA';
+
         if (preg_match($re, $newOutput, $matches)) {
             $str_attrs = $matches['attrs'];
             $format = $matches['format'];
@@ -93,7 +116,10 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
             $codeFetcher = new NodeCodeFetcher($str_attrs_code);
             $attributes = array();
             $attributes_dyn = array();
-            $attributes_singleVar = array(); // :class=>$myClass,:href=>$url
+            // :class=>$myClass,:href=>$url  是动态的，但只是单个变量，有利于产生简洁代码
+            $attributes_singleVar = array();
+            // is id or class in array form?
+            // like: array('id', ([$item['type'], $item['number']]))  ([..])内的元素组合而成id
             $array_in_classOrIdValue = array('id' => false, 'class' => false);
 
             foreach ($stmts[0]->items as $item) {

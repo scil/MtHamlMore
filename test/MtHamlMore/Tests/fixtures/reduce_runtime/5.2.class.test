@@ -14,9 +14,12 @@ file_put_contents($compiled_file,$compiled);
 include $compiled_file;
 --HAML--
 %div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
+%div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
 --EXPECT--
+<div class="add car">Contents</div>
 <div class="add car">Contents</div>
 
 --EXPECT_PHP--
 <div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array('add',$item['type'],$item == $sortcol ? array('sort', $sortdir):null) ,false,false,'UTF-8'); ?>>Contents</div>
+<div<?php \MtHamlMoreRuntime\Runtime::renderAttribute('class',array('add',$item['type'],$item == $sortcol ? ['sort', $sortdir]:null) ,false,false,'UTF-8'); ?>>Contents</div>
 

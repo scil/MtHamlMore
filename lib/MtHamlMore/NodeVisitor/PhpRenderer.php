@@ -57,7 +57,7 @@ class PhpRenderer extends \MtHaml\NodeVisitor\PhpRenderer implements VisitorInte
             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'item'), array('class', ($item['is_empty'] ? "empty":null))), 'html5', 'UTF-8'); ?>
 
     %div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
-        writed as->
+        or writed as->
     %div.add{:class => [$item['type'], $item == $sortcol ? array('sort', $sortdir):null] } Contents
         rendered by MtHaml:
             <?php echo MtHaml\Runtime::renderAttributes(array(array('class', 'add'), array('class', ([$item['type'], $item == $sortcol ? array('sort', $sortdir):null]))), 'html5', 'UTF-8'); ?>

@@ -113,7 +113,7 @@ Works well for these haml:
 
 .item{:class => $item['is_empty'] ? "empty":null}
 
-%div.add{:class => array($item['type'], $item == $sortcol ? array('sort', $sortdir):null) } Contents
+%div.add{:class => [$item['type'], $item == $sortcol ? ['sort', $sortdir]:null] } Contents
 
 #div{:class => array($item['type'], $item['urgency']), :id => array($item['type'], $item['number']>3?'big' :'small') }
 

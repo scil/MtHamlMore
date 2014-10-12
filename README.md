@@ -69,7 +69,12 @@ is equal with
 @call
   _attri hello
 ```
-
+Please note, this form is not treated as attribute value
+```
+@call
+  _attri
+    hello
+```
 
 
 see more examples at : "docs/0. Snip Examples.md"

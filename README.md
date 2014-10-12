@@ -60,6 +60,18 @@ In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2
 </div>
 ```
 
+Attribute values can be writed as named placeholdervalue, that means:
+```
+@call(attri="hello")
+```
+is equal with
+```
+@call
+  _attri hello
+```
+
+
+
 see more examples at : "docs/0. Snip Examples.md"
 
 

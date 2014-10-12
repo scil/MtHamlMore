@@ -11,6 +11,7 @@ use MtHamlMore\Lib\File;
     __MtHamlMore_uses
     __MtHamlMore_mixes
 */
+
 class SnipFileParser implements SnipFileParserInterface
 {
     protected $file;
@@ -38,14 +39,15 @@ class SnipFileParser implements SnipFileParserInterface
     {
         return $this->mixes ? File::parseFiles($this->mixes) : array();
     }
-    public static function snipCaller($snip, $arg, $file)
+
+    public static function snipCaller($snip, $arg, $namedPlaceholderValue, $file)
     {
         if (gettype($snip) == 'string') {
         } elseif (is_callable($snip)) {
             try {
                 $normal_arr = $arg[0];
                 $named_att = $arg[1];
-                $snip = self::call_user_func_named_array($snip, $normal_arr, $named_att);
+                $snip = self::call_user_func_named_array($snip, $normal_arr, $named_att, $namedPlaceholderValue);
             } catch (\Exception $e) {
                 throw new SnipFileParserException($file, $snip, "run wrong $e");
             }
@@ -56,22 +58,25 @@ class SnipFileParser implements SnipFileParserInterface
     }
 
     // based on code from: http://blog.creapptives.com/post/26272336268/calling-php-functions-with-named-parameters
-    static function call_user_func_named_array($method, $normal_arr, $named_att)
+    static function call_user_func_named_array($method, $normal_arr, $named_att, $inlineContent)
     {
         $ref = new \ReflectionFunction($method);
         $params = [];
         foreach ($ref->getParameters() as $p) {
-            if (!isset($named_att[$p->name])) {
-                if (empty($normal_arr)) {
-                    if ($p->isOptional())
-                        $params[] = $p->getDefaultValue();
-                    else
-                        throw new \Exception("Missing parameter $p->name");
-                } else
-                    $params[] = array_shift($normal_arr);
-            } else {
-                $params[] = $named_att[$p->name];
-            }
+            $name = $p->name;
+            if (isset($named_att[$name])) {
+                $params[] = $named_att[$name];
+            } elseif ($inlineContent &&
+                isset($inlineContent[$name]) &&
+                is_string($inlineContent[$name])) {
+                $params[] = $inlineContent[$name];
+            } elseif (!empty($normal_arr)) {
+                $params[] = array_shift($normal_arr);
+            } elseif  ($p->isOptional()) {
+                $params[] = $p->getDefaultValue();
+            } else
+                throw new \Exception("Missing parameter $p->name");
+
         }
         return $ref->invokeArgs($params);
     }
@@ -86,8 +91,8 @@ class SnipFileParser implements SnipFileParserInterface
             throw new SnipFileParserException($this->file, '', "include snip file {$this->file} err: $e");
         }
 
-        foreach(array('uses','mixes') as $type){
-            $v = '__MtHamlMore_'.$type;
+        foreach (array('uses', 'mixes') as $type) {
+            $v = '__MtHamlMore_' . $type;
             if (isset($$v)) {
                 if (is_callable($$v)) {
                     try {

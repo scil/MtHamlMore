@@ -10,11 +10,21 @@ use MtHamlMore\NodeVisitor\VisitorInterface;
 class PlaceholderValue extends NestAbstract
 {
     protected $name;
+    protected $sInlineContent; // used for SnipCaller attribute
 
     public function __construct(array $position, $name)
     {
         parent::__construct($position);
         $this->name = $name;
+    }
+    public function getSInlineContent(){
+        return $this->sInlineContent;
+    }
+    public function hasSInlineContent(){
+        return is_string($this->sInlineContent)?true:false;
+    }
+    public function setSInlineContent($s){
+        $this->sInlineContent=$s;
     }
 
     public function getName()

@@ -89,6 +89,7 @@ class Parser extends \MtHaml\Parser
 
             $buf->skipWs();
 
+            $node->setSInlineContent($buf->getLine());
             if (null !== $nested = $this->parseStatement($buf)) {
 //            if (null !== $nested = $this->parseNestableStatement($buf)) {
 

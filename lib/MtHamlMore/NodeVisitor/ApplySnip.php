@@ -24,6 +24,7 @@ class ApplySnip extends VisitorAbstract
         $snipName = $node->getSnipName();
         $attributes = $this->parseSnipCallerAttributes($node);
         $placeholdervalues = $this->parseSnipCallerPlaceholderValues($node);
+        $inlineContent= array_pop($placeholdervalues);
 
         $env=$node->getEnv();
 
@@ -34,7 +35,7 @@ class ApplySnip extends VisitorAbstract
             'snipcallerNode'=>$node,
         );
 
-        $secondRoot = Environment::parseSnip($snipName, $attributes, $options ,$env,true);
+        $secondRoot = Environment::parseSnip($snipName, $attributes,$inlineContent, $options ,$env,true);
         $node->setSecond($secondRoot);
     }
 
@@ -43,6 +44,7 @@ class ApplySnip extends VisitorAbstract
     {
         $namedPlaceholderValues = array();
         $unNamedPlaceholderValues = array();
+        $inlineContent=array();
         if ($node->hasContent()) {
             $unNamedPlaceholderValues[] = $node->getContent();
         } elseif ($node->hasChilds()) {
@@ -53,8 +55,11 @@ class ApplySnip extends VisitorAbstract
                     } else {
                         $value = $child->getChilds();
                     }
-                    if ($placeholderName = $child->getName())
+                    if ($placeholderName = $child->getName()){
                         $namedPlaceholderValues[$placeholderName] = $value;
+                        if ($child->hasSInlineContent())
+                            $inlineContent[$placeholderName]=$child->getSInlineContent();
+                    }
                     else
                         $unNamedPlaceholderValues[] = $value;
 
@@ -66,7 +71,7 @@ class ApplySnip extends VisitorAbstract
             }
         }
 
-        return array($namedPlaceholderValues,$unNamedPlaceholderValues);
+        return array($namedPlaceholderValues,$unNamedPlaceholderValues,$inlineContent);
     }
 
 // development memorandum

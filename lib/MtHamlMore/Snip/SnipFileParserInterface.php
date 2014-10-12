@@ -9,5 +9,5 @@ interface SnipFileParserInterface
     public function getUses();
     // return Array
     public function getMixes();
-    public static function snipCaller($snip,$arg,$file);
+    public static function snipCaller($snip,$arg,$namedPlaceholderValue,$file);
 }

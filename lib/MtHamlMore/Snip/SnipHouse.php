@@ -97,7 +97,7 @@ class SnipHouse implements SnipHouseInterface
         }
     }
 
-    function getSnipAndFiles($name, array $arg = array())
+    function getSnipAndFiles($name, array $arg = array(),$inlineContent=null)
     {
 
         // First file where snip live
@@ -107,7 +107,7 @@ class SnipHouse implements SnipHouseInterface
         if ($found = $this->findSnip($allUses, $name)) {
             list($snip, $file) = $found;
             $uses = isset(static::$file_ueses[$file]) ? static::$file_ueses[$file] : array();
-            $snip = call_user_func(self::$file_snipcaller[$file], $snip, $arg, $file);
+            $snip = call_user_func(self::$file_snipcaller[$file], $snip, $arg,$inlineContent, $file);
             return array($snip, $file, $uses);
         } else
             throw new SnipHouseException(implode(';',$allUses), $name, 'not found in there use files ');

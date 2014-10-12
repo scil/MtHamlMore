@@ -128,7 +128,7 @@ class Environment extends \MtHaml\Environment
                 );
                 // trim any break line or indent space
                 $parsedSnip =  rtrim(
-                        self::parseSnip($matches[2], array(), $options, $this->currentMoreEnv),
+                        self::parseSnip($matches[2], array(),array(), $options, $this->currentMoreEnv),
                         "\n") ;
                 return $front . $parsedSnip;
             } else {
@@ -321,7 +321,7 @@ class Environment extends \MtHaml\Environment
             )
 * @param $parentEnv : the key reason of this argument is at README.md::Development Rule 2.3.3
 */
-    public static function parseSnip($snipName, array $attributes = array(), $options = array(), MoreEnv $parentMoreEnv,$returnRoot=false)
+    public static function parseSnip($snipName, array $attributes = array(),array $inlineContent=array(), $options = array(), MoreEnv $parentMoreEnv,$returnRoot=false)
     {
 
 
@@ -340,7 +340,7 @@ class Environment extends \MtHaml\Environment
             $log->info($front . "call snip : [$snipName]");
         }
 
-        list($snipHaml, $fileName, $snips) = $snipHouse->getSnipAndFiles($snipName, $attributes);
+        list($snipHaml, $fileName, $snips) = $snipHouse->getSnipAndFiles($snipName, $attributes, $inlineContent);
 
         if($parentMoreEnv['debug']){
             $log->info($front . "located at file $fileName");

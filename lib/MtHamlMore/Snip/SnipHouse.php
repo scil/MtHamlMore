@@ -107,7 +107,10 @@ class SnipHouse implements SnipHouseInterface
         if ($found = $this->findSnip($allUses, $name)) {
             list($snip, $file) = $found;
             $uses = isset(static::$file_ueses[$file]) ? static::$file_ueses[$file] : array();
-            $snip = call_user_func(self::$file_snipcaller[$file], $snip, $arg,$inlineContent, $file);
+            if(isset(self::$file_snipcaller[$file]))
+                $snip = call_user_func(self::$file_snipcaller[$file], $snip, $arg,$inlineContent, $file);
+            else
+                $snip = \MtHamlMore\Snip\SnipFileParser::snipCaller($snip,$arg,$inlineContent,$file);
             return array($snip, $file, $uses);
         } else
             throw new SnipHouseException(implode(';',$allUses), $name, 'not found in there use files ');
@@ -165,7 +168,8 @@ class SnipHouse implements SnipHouseInterface
         $snips = $parser->getSnips();
         $uses = $parser->getUses();
         $mixes = $parser->getMixes();
-        self::$file_snipcaller[$file] = array($class, 'snipCaller');
+        if ( $class != '\MtHamlMore\Snip\SnipFileParser')
+            self::$file_snipcaller[$file] = array($class, 'snipCaller');
         unset($parser);
 
         if ($uses) {

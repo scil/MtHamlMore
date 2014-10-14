@@ -36,10 +36,44 @@ output html :
 </div>
 ```
 
-'@@@' is a placeholder where you can put your own content,and you could define default value for it.
+'@@@' is a placeholder where you can put your own content,and you could define default value for it, or even set global placeholder default value use option  'globalDefaultPlaceholderValue', that's useful if you want all placeholder rendered to empty string when you forget apply placeholder value.
 
 
-second example
+second example: inline placeholder
+snips:
+```
+  $title="%h1 welcome to {@@}.";
+  $title2="%h1 this is a placeholder with default value. welcome to {@:MtHamlMore(default)@}.";
+  $title3="%h1 this is a named placeholder.welcome to {@name@}.";
+  $title4="%h1 welcome to {@name:MtHamlMore(default)@}.";
+  $div='.{@@}';
+```
+haml:
+```
+@title Moon
+@title2 Moon
+@title2
+@title3
+  _name Moon
+@title4
+  _name Sun
+@title4
+@div box
+```
+output:
+```
+@title Moon
+@title2 Moon
+@title2
+@title3
+  _name Moon
+@title4
+  _name Sun
+@title4
+@div box
+```
+
+third example
 ```
 @grid(grid="4 -4 4" fluid="1")
   _ %h1 4

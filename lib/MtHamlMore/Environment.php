@@ -43,7 +43,7 @@ class Environment extends \MtHaml\Environment
         }
 
         $string = $this->parseInlineSnipCaller($string);
-        $string = $this->parseInlinePlaceholder($string);
+        $string = $this->parseInlinePlaceholder($string,$this->currentMoreEnv['globalDefaultPlaceholderValue']);
 
         if ($returnRoot){
             // copied from parent::compileString
@@ -138,7 +138,7 @@ class Environment extends \MtHaml\Environment
 
     }
 
-    protected function parseInlinePlaceholder($string)
+    protected function parseInlinePlaceholder($string,$globalDefaultPlaceholderValue=null)
     {
 
         if ($this->currentMoreEnv->hasPlaceholdervalues()) {
@@ -180,7 +180,7 @@ class Environment extends \MtHaml\Environment
                    @\}
                 ) # named InlinePlaceholder
                 /x',
-                function ($matches) use (&$values, &$nextMaybeUnnamedPlaceholderIndex) {
+                function ($matches) use (&$values, &$nextMaybeUnnamedPlaceholderIndex,$globalDefaultPlaceholderValue) {
                     //  un-named Placeholder
                     if (!empty($matches['block'])) {
                         ++$nextMaybeUnnamedPlaceholderIndex;
@@ -216,6 +216,9 @@ class Environment extends \MtHaml\Environment
                             return str_repeat('\\', ($number - 1) / 2) . '{@' . (array_key_exists(6,$matches)?$matches[6]:'') . '@}';
                         }
                     }
+
+                    if(is_string($globalDefaultPlaceholderValue))
+                        return $front.$globalDefaultPlaceholderValue;
 
                     throw new MoreException('plz supply value for inlinePlaceholder ' . $name);
                 }, $string);
@@ -283,7 +286,7 @@ class Environment extends \MtHaml\Environment
             $visitors[] = $this->getMakesurePlaceholderValueVisitor();
             // if is useless and harmful, because ApplyPlaceholderValueVisitor also apply placehodler default value
             //  if($this->hasPlaceholdervalues())
-            $visitors[] = $this->getApplyPlaceholderValueVisitor($this->currentMoreEnv->getPlaceholdervalues());
+            $visitors[] = $this->getApplyPlaceholderValueVisitor($this->currentMoreEnv->getPlaceholdervalues(),$this->currentMoreEnv['globalDefaultPlaceholderValue']);
             $visitors[] = $this->getApplySnipVisitor($this->currentMoreEnv['baseIndent']);
         }
         $visitors[] = $this->getAutoclosevisitor();
@@ -302,9 +305,9 @@ class Environment extends \MtHaml\Environment
     {
         return new ApplySnip($indent);
     }
-    public function getApplyPlaceholderValueVisitor($values)
+    public function getApplyPlaceholderValueVisitor($values,$globalDefaultValue)
     {
-        return new ApplyPlaceholderValue($values);
+        return new ApplyPlaceholderValue($values,$globalDefaultValue);
     }
 
     public function getMakesurePlaceholderValueVisitor()
@@ -380,6 +383,7 @@ class MoreEnv implements \ArrayAccess
                 'uses' => array(),
                 'snipname' => '',
                 'placeholdervalues' => null,
+                'globalDefaultPlaceholderValue'=>null,
                 'prepare' => false,
                 'baseIndent' => 0,
                 'level' => 0,

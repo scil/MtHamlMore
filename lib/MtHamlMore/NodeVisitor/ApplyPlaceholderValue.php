@@ -3,6 +3,7 @@
 namespace MtHamlMore\NodeVisitor;
 
 use MtHaml\Node\NestInterface;
+use MtHaml\Node\Text;
 use MtHamlMore\Exception\SyntaxErrorException;
 use MtHamlMore\Node\Placeholder;
 use MtHamlMore\Node\PlaceholderDefaultCaller;
@@ -13,10 +14,12 @@ use MtHamlMore\Node\SnipCaller;
 class ApplyPlaceholderValue extends VisitorAbstract
 {
     protected $values;
+    protected $globalDefaultValue;
 
-    function  __construct($v)
+    function  __construct($v,$globalDefaultValue=null)
     {
         $this->values = $v;
+        $this->globalDefaultValue=$globalDefaultValue;
     }
 
     function enterPlaceholder(Placeholder $node)
@@ -55,6 +58,8 @@ class ApplyPlaceholderValue extends VisitorAbstract
             return $node->getChilds();
         elseif ($node->hasContent())
             return array($node->getContent());
+        elseif(is_string($this->globalDefaultValue))
+            return array(new Text(array(-1,-1),$this->globalDefaultValue));
     }
     protected function setValues(Placeholder $node,$v){
         // when "_\n  v", $v is an array already, but "_ v" not

@@ -1,0 +1,37 @@
+--FILE--
+<?php
+echo MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'=>false),array(
+    'uses'=>array("$file.snip"),
+    'filename'=>"$file.haml",
+    'enable_escaper' => false,
+    'globalDefaultPlaceholderValue'=>'',
+));
+
+--HAML--
+@title my title
+@title
+@title2
+@title3
+--SNIPS--
+-# SnipParser="\MtHaml\More\Snip\SnipFileParser"
+<?php
+
+$title=<<<S
+%h1
+  @@@
+S;
+
+$title2='%h1 {@@}';
+$title3='%h1 {@name@}';
+
+
+?>
+--EXPECT--
+<h1>
+  my title
+</h1>
+<h1>
+</h1>
+<h1></h1>
+<h1></h1>
+

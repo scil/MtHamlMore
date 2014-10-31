@@ -109,7 +109,17 @@ Please note, this form is not treated as attribute value
   _attri
     hello
 ```
-
+And
+```
+@call
+  _attri |
+    hello |
+    haml |
+```
+equals with
+```
+@call(attri="hello haml ")
+```
 
 see more examples at : "docs/0. Snip Examples.md"
 

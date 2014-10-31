@@ -9,6 +9,10 @@ echo MtHamlMore\Entry::compilePhpMoreHaml( $parts['HAML'],array('enable_escaper'
 --HAML--
 @uppertitle
   _text hello
+@uppertitle
+  _text |
+    hello |
+    hello |
 --SNIPS--
 -# SnipParser="\MtHaml\More\Snip\SnipFileParser"
 <?php
@@ -22,4 +26,5 @@ S;
 
 --EXPECT--
 <h1>HELLO</h1>
+<h1>HELLO HELLO </h1>
 

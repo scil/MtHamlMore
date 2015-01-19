@@ -164,6 +164,11 @@ $inlineNameS="hello,\\{@name@}";
 $inlineNameDefaultValue="hello,{@name:scil@}";
 $inlineNameDefaultValueS="hello,\\{@name:scil@}";
 
+$title="%h1 welcome to {@@}.";
+$title2="%h1 this is a placeholder with default value. welcome to {@:MtHamlMore(default)@}.";
+$title3="%h1 this is a named placeholder.welcome to {@name@}.";
+$title4="%h1 welcome to {@name:MtHamlMore(default)@}.";
+$div='.{@@}';
 /*
 @hello(n="3" ok="31-#{3+3}" p=6+4 pp="#{2+1}")
 */

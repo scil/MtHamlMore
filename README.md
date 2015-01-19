@@ -39,7 +39,8 @@ output html :
 '@@@' is a placeholder where you can put your own content,and you could define default value for it, or even set global placeholder default value use option  'globalDefaultPlaceholderValue', that's useful if you want all placeholder rendered to empty string when you forget apply placeholder value.
 
 
-second example: inline placeholder
+
+**second example: inline placeholder**
 snips:
 ```
   $title="%h1 welcome to {@@}.";
@@ -62,18 +63,17 @@ haml:
 ```
 output:
 ```
-@title Moon
-@title2 Moon
-@title2
-@title3
-  _name Moon
-@title4
-  _name Sun
-@title4
-@div box
+<h1>welcome to Moon.</h1>
+<h1>this is a placeholder with default value. welcome to Moon.</h1>
+<h1>this is a placeholder with default value. welcome to MtHamlMore(default).</h1>
+<h1>this is a named placeholder.welcome to Moon.</h1>
+<h1>welcome to Sun.</h1>
+<h1>welcome to MtHamlMore(default).</h1>
+<div class="box"></div>
 ```
 
-third example
+
+**third example**
 ```
 @grid(grid="4 -4 4" fluid="1")
   _ %h1 4
@@ -94,7 +94,7 @@ In 'examples/snips/php.php', there is an snip which defines Twitter Bootstrop v2
 </div>
 ```
 
-Attribute values can be writed as named placeholdervalue, that means:
+**Attribute values can be writed as named placeholdervalue**
 ```
 @call(attri="hello")
 ```
@@ -121,7 +121,7 @@ equals with
 @call(attri="hello haml ")
 ```
 
-see more examples at : "docs/0. Snip Examples.md"
+see **more examples** at : "docs/0. Snip Examples.md"
 
 
 
